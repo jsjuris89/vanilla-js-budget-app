@@ -1,0 +1,22 @@
+* {
+   margin: 0;
+   padding: 0;
+   box-sizing: border-box;
+}
+
+body {
+   color: #555;
+   /* font-family: Open Sans; */
+   font-family: sans-serif;
+   position: relative;
+   height: 100vh;
+   font-weight: 400;
+}
+.top {
+   height: 40vh;
+   background-image: url(./background3.png);
+   background-size: contain;
+   background-repeat: no-repeat;
+   background-position: center;
+   position: relative;
+}
