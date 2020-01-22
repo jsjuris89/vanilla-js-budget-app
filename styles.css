@@ -140,3 +140,20 @@ h2 {
 .item:nth-child(even) {
    background-color: #f7f7f7;
 }
+
+/* Under .expenses-list */
+
+/* These elements are NOT in the DOM */
+/* Dynamically created element with this class */
+.item-percentage {
+
+}
+/* .income .item-value, .income .item-delete-btn {
+   color: #28B9B5;
+}
+.expenses .item-value, .expenses-percentage, .expenses .item-delete-btn {
+   color: rgb(206, 12, 6);
+} */
+.item-delete-btn {
+
+}
