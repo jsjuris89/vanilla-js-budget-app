@@ -12,6 +12,10 @@ body {
    height: 100vh;
    font-weight: 400;
 }
+h2 {
+   margin-bottom: 15px;
+   /* Why so big font */
+}
 .top {
    height: 40vh;
    /* background-image: url(./background3.png);
@@ -94,5 +98,45 @@ body {
    width: 100px;
 }
 .add-btn {
-   
+   border: none;
+   /* border-radius: 0; */
+   background: #1056cf;
+   padding: 12px 18px;
+   color: #fff;
+   text-transform: uppercase;
+   cursor: pointer;
+}
+.add-btn:active {
+   background:  #0c3d92;
+}
+.add-type:focus, .add-description:focus, .add-value:focus {
+   outline: none;
+   /* border: 2px solid #28B9B5; */
+   border: 1px solid #1056cf;
+}
+
+/* Lists */
+.container {
+   width: 800px;
+   margin: 50px auto;
+   /* Add max-width later */
+   display: flex;
+   justify-content: space-around;
+}
+.income-title {
+   color: #28B9B5;
+}
+.expenses-title {
+   color: rgb(206, 12, 6);
+}
+/* List item */
+.item {
+   padding: 13px;
+   border-bottom: 1px solid #e7e7e7;
+}
+.item:first-child {
+   border-top: 1px solid #e7e7e7;
+}
+.item:nth-child(even) {
+   background-color: #f7f7f7;
 }
