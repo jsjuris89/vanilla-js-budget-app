@@ -10,16 +10,21 @@ let UIController = (function(){
    let DOMStrings = {
       inputType: ".add-type",
       inputDescription: ".add-description",
-      inputValue: ".add-value"
+      inputValue: ".add-value",
+      inputBtn: ".add-btn"
    }
 
    return {
       getInput: function(){
          return {
-            type: document.querySelector(DOMStrings.inputType).value, // Will be either income or expense
-            description: document.querySelector(DOMStrings.inputDescription).value
+            type: document.querySelector(DOMStrings.inputType).value, 
+            description: document.querySelector(DOMStrings.inputDescription).value,
             value: document.querySelector(DOMStrings.inputValue).value
          };
+      },
+
+      getDOMStrings: function() {
+         return DOMStrings;
       }
    };
 })();
@@ -27,6 +32,10 @@ let UIController = (function(){
 
 // Global App Controller
 let controller = (function(budget, UI) {
+
+   let DOM = UI.getDOMStrings();
+   // console.log(DOM);
+   
    let addItem = function() {
       
         // 1. Get the filed input data
@@ -40,16 +49,12 @@ let controller = (function(budget, UI) {
         // 4. Calculate the budget
         
         // 5. Display the budget on the UI
-        console.log("Button was clicked!");
+        console.log("Button was clicked or Enter was pressed!");
    }
-   document.querySelector(".add-btn").addEventListener("click", addItem);
+   document.querySelector(DOM.inputBtn).addEventListener("click", addItem);
    document.addEventListener('keypress', function(event){
       if (event.keyCode === 13) {
          addItem();
       }
    });
-   
-   
-   
 })(budgetController, UIController)
-// Code from https://github.com/kristyburge/budget-app/blob/908ce12f63e1ed1573c72d91eb1a136872815c41/app.js
