@@ -1,7 +1,35 @@
 
 // Budget Controller
+
 let budgetController = (function() {
-   // some code
+
+   // Expense function constructor
+   let Expense = function(id, description, value) {
+      this.id = id;
+      this.description = description;
+      this.value = value;
+   };
+   // Income function constructor
+   let Income = function(id, description, value) {
+      this.id = id;
+      this.description = description;
+      this.value = value;
+   }
+
+   /* 
+   The budget constructor keeps track of all the incomes and expenses and also of the budget and percentages.
+   And we need a good data structure for that.
+
+   For example if the user will input 15 incomes, 
+   we need to create 15 income objects, 
+   and we can store these 15 incomes into an array.
+   */
+  let data = {
+     allItems: {
+        exp: [],
+        inc: []
+     }
+  }
 })();
 
 // UI Controller
@@ -51,7 +79,7 @@ let controller = (function(budget, UI) {
         // 5. Display the budget on the UI
         console.log("Button was clicked or Enter was pressed!");
    }
-   document.querySelector(DOM.inputBtn).addEventListener("click", addItem);
+   document.querySelector(DOM.inputBtn).addEventListener("click", addItem); // if we move this before let addItem = function()... then it wont work
    document.addEventListener('keypress', function(event){
       if (event.keyCode === 13) {
          addItem();
