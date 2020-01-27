@@ -1,27 +1,17 @@
 // Budget Controller
 let budgetController = (function() {
 
-   // Expense function constructor
    let Expense = function(id, description, value) {
       this.id = id;
       this.description = description;
       this.value = value;
    };
-   // Income function constructor
    let Income = function(id, description, value) {
       this.id = id;
       this.description = description;
       this.value = value;
    };
 
-   /* 
-   The budget constructor keeps track of all the incomes and expenses and also of the budget and percentages.
-   And we need a good data structure for that.
-
-   For example if the user will input 15 incomes, 
-   we need to create 15 income objects, 
-   and we can store these 15 incomes into an array.
-   */
   let data = {
      allItems: {
         exp: [],
@@ -35,27 +25,12 @@ let budgetController = (function() {
         let newItem;
         let ID;
 
-      // we need to create new ID => so we can utilize constructor functions for Expense or Income (since we get desc & val values already from UI)
-     
-      // create new ID
-      //[1 2 3 4 5], next ID = 6
-      //[1 2 4 6 8], next ID = 9
-      // ID = last ID +1
       if (!data.allItems[type].length > 0) {
-         // console.log("In chosen allItems.exp or allItems.inc array there is NOTHING.") 
-         // set ID = 0
          ID = 0;
          } else {
-         // console.log("In chosen allItems.exp or allItems.inc array there is SOMETHING.")
-         // set ID = last ID + 1
          ID = data.allItems[type][data.allItems[type].length - 1].id + 1;
-         /* Up code destructured:
-         ID = data.allItems[inc] or ID = data.allItems[exp] + rest code [data.allItems[type].length - 1] <--- this is array element index just same as arr[0] arr[1] etc
-
-         */
          }
          
-         // create new item based on 'exp' or 'inc' type
          if (type === "exp") {
             newItem = new Expense(ID, desc, val);
          } else if (type === "inc") {
@@ -66,9 +41,9 @@ let budgetController = (function() {
 
          return newItem;
       },
-      testData: function() {
-         console.log(data);
-      }
+      // testData: function() {
+      //    console.log(data);
+      // }
      }
 })();
 
@@ -80,7 +55,9 @@ let UIController = (function(){
       inputType: ".add-type",
       inputDescription: ".add-description",
       inputValue: ".add-value",
-      inputBtn: ".add-btn"
+      inputBtn: ".add-btn",
+      incomeContainer: ".income-list",
+      expenseContainer: ".expenses-list"
    }
 
    return {
@@ -90,6 +67,23 @@ let UIController = (function(){
             description: document.querySelector(DOMStrings.inputDescription).value,
             value: document.querySelector(DOMStrings.inputValue).value
          };
+      },
+      
+      addItemToDom: function(obj, type){
+         let element;
+         let html;
+         let newHtml;
+
+         if (type === "inc") {
+            element = DOMStrings.incomeContainer;
+            html = '<div class="item" id="income-%id%"><div class="item-description">%description%</div><div><div class="item-value">%value%</div><div class="item-delete">                    <button class="item-delete-btn">Delete</button></div></div></div>'
+         }
+         newHtml = html.replace('%id%', obj.id);
+         newHtml = newHtml.replace('%description%', obj.description);
+         newHtml = newHtml.replace('%value%', obj.value);
+
+         // insert HTML into the DOM
+         document.querySelector(element).insertAdjacentHTML('beforeend', newHtml);
       },
 
       getDOMStrings: function() {
@@ -116,6 +110,7 @@ let controller = (function(budget, UI) {
         newItem = budget.addItemToArray(input.type, input.description, input.value);
         
         // 3. Add the item to the UI
+        UI.addItemToDom(newItem, input.type)
         // 4. Calculate the budget
         // 5. Display the budget on the UI
       //   console.log("Button was clicked or Enter was pressed!");
