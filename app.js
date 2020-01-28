@@ -25,12 +25,12 @@ let budgetController = (function() {
         let newItem;
         let ID;
 
-      if (!data.allItems[type].length > 0) {
-         ID = 0;
+         if (!data.allItems[type].length > 0) {
+            ID = 0;
          } else {
-         ID = data.allItems[type][data.allItems[type].length - 1].id + 1;
+            ID = data.allItems[type][data.allItems[type].length - 1].id + 1;
          }
-         
+            
          if (type === "exp") {
             newItem = new Expense(ID, desc, val);
          } else if (type === "inc") {
@@ -76,7 +76,22 @@ let UIController = (function(){
 
          if (type === "inc") {
             element = DOMStrings.incomeContainer;
-            html = '<div class="item" id="income-%id%"><div class="item-description">%description%</div><div><div class="item-value">%value%</div><div class="item-delete">                    <button class="item-delete-btn">Delete</button></div></div></div>'
+            html = '<div class="item" id="income-%id%">' +
+                     '<div class="item-description">%description%</div>' +
+                        '<div class="item-value">%value%</div>' +
+                        '<div class="item-delete">' +
+                           '<button class="item-delete-btn">Delete</button>' +
+                        '</div>' +
+                     '</div>';
+         } else if (type === "exp") {
+            element = DOMStrings.expenseContainer;
+            html = '<div class="item" id="expense-%id%">' +
+                     '<div class="item-description">%description%</div>' +
+                        '<div class="item-value">%value%</div>' +
+                        '<div class="item-delete">' +
+                           '<button class="item-delete-btn">Delete</button>' +
+                        '</div>' +
+                     '</div>';
          }
          newHtml = html.replace('%id%', obj.id);
          newHtml = newHtml.replace('%description%', obj.description);
@@ -84,6 +99,20 @@ let UIController = (function(){
 
          // insert HTML into the DOM
          document.querySelector(element).insertAdjacentHTML('beforeend', newHtml);
+         /*
+			  Using the 'beforeend' keyword all the html code will be inserted 
+			  as a child of the 'element' variable that is '.income-list' or 
+			  '.expenses-list', but as a last child. So as the last element 
+			  in the list.
+			*/
+      },
+
+      clearFields: function() {
+         //code
+         const descriptionField = document.querySelector(DOMStrings.inputDescription);
+         descriptionField.value = "";
+         document.querySelector(DOMStrings.inputValue).value = "";
+         descriptionField.focus();
       },
 
       getDOMStrings: function() {
@@ -101,18 +130,20 @@ let controller = (function(budget, UI) {
    let addItem = function() {
       let input;
       let newItem;
-        // 1. Get the filed input data
+        // 1. Get the input data from user
         input = UI.getInput();
-      //   console.log("input values are: ", input);
-      //   console.log("input type is: ", input.type);
+        //   console.log("input values are: ", input);
+        //   console.log("input type is: ", input.type);
         
         // 2. Add the item to the budget controller
         newItem = budget.addItemToArray(input.type, input.description, input.value);
         
         // 3. Add the item to the UI
         UI.addItemToDom(newItem, input.type)
-        // 4. Calculate the budget
-        // 5. Display the budget on the UI
+        // 4. Clear the fields
+        UI.clearFields();
+        // 5. Calculate the budget
+        // 6. Display the budget on the UI
       //   console.log("Button was clicked or Enter was pressed!");
    }
    document.querySelector(DOM.inputBtn).addEventListener("click", addItem);
