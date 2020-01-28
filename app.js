@@ -100,7 +100,8 @@ let UIController = (function(){
       expenseContainer: ".expenses-list",
       budgetLabel: ".budget-value",
       incomeLabel: ".budget-income-value",
-      expensesLabel: ".budget-expenses-value"
+      expensesLabel: ".budget-expenses-value",
+      listsContainer: ".container"
    }
 
    return {
@@ -204,10 +205,20 @@ let controller = (function(budget, UI) {
            console.log("Validation failed!");
         }
    }
+
+   let deleteItem = function(event) {
+      // console.log(event.target);
+      if (event.target.className == "item-delete-btn") {
+         const div = event.target.parentElement.parentElement;
+         // console.log(div);
+         div.parentNode.removeChild(div);
+      }
+   };
    document.querySelector(DOM.inputBtn).addEventListener("click", addItem);
    document.addEventListener('keypress', function(event){
       if (event.keyCode === 13) {
          addItem();
       }
    });
+   document.querySelector(DOM.listsContainer).addEventListener("click", deleteItem);
 })(budgetController, UIController)
