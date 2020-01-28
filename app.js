@@ -51,7 +51,6 @@ let budgetController = (function() {
          } else if (type === "inc") {
             newItem = new Income(ID, desc, val);
          }
-         // add new exp or inc to the end of the allItems.exp or allItems.inc array
          data.allItems[type].push(newItem);
 
          return newItem;
@@ -71,10 +70,6 @@ let budgetController = (function() {
             data.percentage = -1;
          }
       },
-      /*
-      Note:
-      getBudget method is here because we are seperating functions that only retrieve data and functions that only set data
-      */
       getBudget: function() {
          return {
             budget: data.budget,
@@ -82,13 +77,6 @@ let budgetController = (function() {
             totalExpense: data.totals.exp,
             percentage: data.percentage
          }
-         /*
-         To test it in chrome:
-         1) budgetController.getBudget();
-         2) user inputs income & expense data
-         3) budgetController.calculateBudget();
-         4) budgetController.getBudget(); or budgetController.getBudget().percentage
-         */
       },
       // testData: function() {
       //    console.log(data);
@@ -117,7 +105,7 @@ let UIController = (function(){
          return {
             type: document.querySelector(DOMStrings.inputType).value, 
             description: document.querySelector(DOMStrings.inputDescription).value,
-            value: parseFloat(document.querySelector(DOMStrings.inputValue).value) // converting string to a number
+            value: parseFloat(document.querySelector(DOMStrings.inputValue).value)
          };
       },
       
@@ -151,12 +139,6 @@ let UIController = (function(){
 
          // insert HTML into the DOM
          document.querySelector(element).insertAdjacentHTML('beforeend', newHtml);
-         /*
-			  Using the 'beforeend' keyword all the html code will be inserted 
-			  as a child of the 'element' variable that is '.income-list' or 
-			  '.expenses-list', but as a last child. So as the last element 
-			  in the list.
-			*/
       },
 
       clearFields: function() {
@@ -180,6 +162,17 @@ let UIController = (function(){
 let controller = (function(budget, UI) {
 
    let DOM = UI.getDOMStrings();
+
+   let updateBudget = function() {
+      // 1. calculate the budget
+      budget.calculateBudget();
+      // 2. return the budget
+      let budgetNow = budget.getBudget();
+      // 3. Displaythe budget in the UI
+      console.log("Total budget available: ", budgetNow.budget);
+      console.log("We have earned: " + budgetNow.totalIncome + " and spend " + budgetNow.totalExpense);
+      console.log("We are spending " + budgetNow.percentage + "% of our income.");
+   }
    
    let addItem = function() {
       let input;
@@ -195,7 +188,8 @@ let controller = (function(budget, UI) {
             UI.addItemToDom(newItem, input.type)
             // 3.2 Clear the fields
             UI.clearFields();
-            // 4. Calculate the budget
+            // 4. Calculate and update budget
+            updateBudget();
             // 5. Display the budget on the UI   
         } else {
            console.log("Validation failed!");
