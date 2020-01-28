@@ -20,8 +20,11 @@ let budgetController = (function() {
      totals: {
         exp: 0,
         inc: 0
-     }
+     },
+     budget: 0
   };
+
+
 
   let calculateTotal = function(type) {
       let sum = 0;
@@ -31,7 +34,6 @@ let budgetController = (function() {
       data.totals[type] = sum;
   };
 
-//   Create public method to allow other modules to add new items to the data structure
   return {
      addItemToArray: function(type, desc, val) {
         let newItem;
@@ -53,11 +55,41 @@ let budgetController = (function() {
 
          return newItem;
       },
-      testData: function() {
-         console.log(data);
-      }
+      calculateBudget: function() {
+         // Calculate total income & expenses
+         calculateTotal('exp');
+         calculateTotal('inc');
+
+         // Calculate the budget = income - expenses
+         data.budget = data.totals.inc - data.totals.exp;
+      },
+      /*
+      Note:
+      getBudget method is here because we are seperating functions that only retrieve data and functions that only set data
+      */
+      getBudget: function() {
+         return {
+            budget: data.budget,
+            totalIncome: data.totals.inc,
+            totalExpense: data.totals.exp
+         }
+         /*
+         1) budgetController.getBudget();
+         budget will be: 0
+         then user inserts data from page
+         2) budgetController.calculateBudget();
+         3) budgetController.getBudget();
+         ----> we get data in our app
+         */
+      },
+      // testData: function() {
+      //    console.log(data);
+      // }
      }
 })();
+
+
+
 
 
 // UI Controller
@@ -120,7 +152,6 @@ let UIController = (function(){
       },
 
       clearFields: function() {
-         //code
          const descriptionField = document.querySelector(DOMStrings.inputDescription);
          descriptionField.value = "";
          document.querySelector(DOMStrings.inputValue).value = "";
@@ -134,6 +165,9 @@ let UIController = (function(){
 })();
 
 
+
+
+
 // Global App Controller
 let controller = (function(budget, UI) {
 
@@ -144,20 +178,17 @@ let controller = (function(budget, UI) {
       let newItem;
         // 1. Get the input data from user
         input = UI.getInput();
-        //   console.log("input values are: ", input);
-        //   console.log("input type is: ", input.type);
 
       // Validate data inputed by user
         if (input.description !== "" && !isNaN(input.value) && input.value > 0) {
-           console.log("Validation was successfull!");
             // 2. Add the item to the budget controller
             newItem = budget.addItemToArray(input.type, input.description, input.value);
-            // 3. Add the item to the UI
+            // 3.1 Add the item to the UI
             UI.addItemToDom(newItem, input.type)
-            // 4. Clear the fields
+            // 3.2 Clear the fields
             UI.clearFields();
-            // 5. Calculate the budget
-            // 6. Display the budget on the UI   
+            // 4. Calculate the budget
+            // 5. Display the budget on the UI   
         } else {
            console.log("Validation failed!");
         }
