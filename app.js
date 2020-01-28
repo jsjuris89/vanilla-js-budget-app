@@ -144,6 +144,10 @@ let UIController = (function(){
          // insert HTML into the DOM
          document.querySelector(element).insertAdjacentHTML('beforeend', newHtml);
       },
+      deleteItemFromDom: function(htmlID) {
+         let element = document.getElementById(htmlID);
+         element.parentElement.removeChild(element);
+      },
 
       clearFields: function() {
          const descriptionField = document.querySelector(DOMStrings.inputDescription);
@@ -207,12 +211,28 @@ let controller = (function(budget, UI) {
    }
 
    let deleteItem = function(event) {
+      let itemID;
+      let splitID;
+      let type;
+      let ID;
       // console.log(event.target);
-      if (event.target.className == "item-delete-btn") {
-         const div = event.target.parentElement.parentElement;
-         // console.log(div);
-         div.parentNode.removeChild(div);
+      console.log(event.target.parentElement.parentElement.id);
+      itemID = event.target.parentElement.parentElement.id
+
+      if (itemID) {
+         splitID = itemID.split("-");
+         console.log("splitID is: " + splitID);
+         type = splitID[0];
+         console.log("type is: " + type);
+         ID = parseInt(splitID[1]);
+         console.log("ID is: " + ID);
       }
+
+      // 1. delete the item from the data structure
+
+      // 2. delete the item from the UI
+      UI.deleteItemFromDom(itemID);
+      // 3. Update and show the new budget
    };
    document.querySelector(DOM.inputBtn).addEventListener("click", addItem);
    document.addEventListener('keypress', function(event){
