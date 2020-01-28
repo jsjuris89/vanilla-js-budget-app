@@ -16,8 +16,20 @@ let budgetController = (function() {
      allItems: {
         exp: [],
         inc: []
+     },
+     totals: {
+        exp: 0,
+        inc: 0
      }
-  }
+  };
+
+  let calculateTotal = function(type) {
+      let sum = 0;
+      data.allItems[type].forEach(function(itemSum) {
+         sum = sum + itemSum.value;
+      });
+      data.totals[type] = sum;
+  };
 
 //   Create public method to allow other modules to add new items to the data structure
   return {
@@ -41,9 +53,9 @@ let budgetController = (function() {
 
          return newItem;
       },
-      // testData: function() {
-      //    console.log(data);
-      // }
+      testData: function() {
+         console.log(data);
+      }
      }
 })();
 
