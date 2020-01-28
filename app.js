@@ -55,6 +55,32 @@ let budgetController = (function() {
 
          return newItem;
       },
+      deleteItemFromArray: function(type, id) {
+         // code
+         let ids;
+         let index;
+
+         /*
+         f.e. id = 6
+         data.allItems[type][id] isn't a solution because of --->
+         ids = [1, 2, 4, 6, 8] :: index would be 3
+         Solution:
+         create an array with all ids and then find the index of the element with the id to be removed
+         */
+        ids = data.allItems[type].map(function(currentElement){
+           return currentElement.id;
+        });
+
+        // find the index of the element to delete from the new array ids
+        // returns index of the id passed through
+        index = ids.indexOf(id);
+
+         // now delete that item from the array
+         // if not found, it will return -1
+         if (index !== -1) {
+            data.allItems[type].splice(index, 1);
+         }
+      },
       calculateBudget: function() {
          // Calculate total income & expenses
          calculateTotal('exp');
@@ -78,9 +104,9 @@ let budgetController = (function() {
             percentage: data.percentage
          }
       },
-      // testData: function() {
-      //    console.log(data);
-      // }
+      testData: function() {
+         console.log(data);
+      }
      }
 })();
 
@@ -120,7 +146,7 @@ let UIController = (function(){
 
          if (type === "inc") {
             element = DOMStrings.incomeContainer;
-            html = '<div class="item" id="income-%id%">' +
+            html = '<div class="item" id="inc-%id%">' +
                      '<div class="item-description">%description%</div>' +
                         '<div class="item-value">%value%</div>' +
                         '<div class="item-delete">' +
@@ -129,7 +155,7 @@ let UIController = (function(){
                      '</div>';
          } else if (type === "exp") {
             element = DOMStrings.expenseContainer;
-            html = '<div class="item" id="expense-%id%">' +
+            html = '<div class="item" id="exp-%id%">' +
                      '<div class="item-description">%description%</div>' +
                         '<div class="item-value">%value%</div>' +
                         '<div class="item-delete">' +
@@ -217,9 +243,15 @@ let controller = (function(budget, UI) {
       let ID;
       // console.log(event.target);
       console.log(event.target.parentElement.parentElement.id);
-      itemID = event.target.parentElement.parentElement.id
+      itemID = event.target.parentElement.parentElement.id;
 
       if (itemID) {
+         // use split - JS converts string to an Object and will return and array
+         /*
+			  JavaScript automatically puts a wrapper around the String and 
+			  convert it from a primitive to an object. And then this object
+			  has access to a lot of string methods. 
+			*/
          splitID = itemID.split("-");
          console.log("splitID is: " + splitID);
          type = splitID[0];
@@ -229,10 +261,12 @@ let controller = (function(budget, UI) {
       }
 
       // 1. delete the item from the data structure
+      budget.deleteItemFromArray(type, ID);
 
       // 2. delete the item from the UI
       UI.deleteItemFromDom(itemID);
       // 3. Update and show the new budget
+      updateBudget();
    };
    document.querySelector(DOM.inputBtn).addEventListener("click", addItem);
    document.addEventListener('keypress', function(event){
