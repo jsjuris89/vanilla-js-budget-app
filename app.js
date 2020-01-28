@@ -21,7 +21,8 @@ let budgetController = (function() {
         exp: 0,
         inc: 0
      },
-     budget: 0
+     budget: 0,
+     percentage: -1
   };
 
 
@@ -62,6 +63,13 @@ let budgetController = (function() {
 
          // Calculate the budget = income - expenses
          data.budget = data.totals.inc - data.totals.exp;
+
+         // Calculate the percentage of income that we spent
+         if (data.totals.inc > 0) {
+            data.percentage = Math.round((data.totals.exp / data.totals.inc) * 100);
+         } else {
+            data.percentage = -1;
+         }
       },
       /*
       Note:
@@ -71,15 +79,15 @@ let budgetController = (function() {
          return {
             budget: data.budget,
             totalIncome: data.totals.inc,
-            totalExpense: data.totals.exp
+            totalExpense: data.totals.exp,
+            percentage: data.percentage
          }
          /*
+         To test it in chrome:
          1) budgetController.getBudget();
-         budget will be: 0
-         then user inserts data from page
-         2) budgetController.calculateBudget();
-         3) budgetController.getBudget();
-         ----> we get data in our app
+         2) user inputs income & expense data
+         3) budgetController.calculateBudget();
+         4) budgetController.getBudget(); or budgetController.getBudget().percentage
          */
       },
       // testData: function() {
