@@ -65,7 +65,7 @@ let UIController = (function(){
          return {
             type: document.querySelector(DOMStrings.inputType).value, 
             description: document.querySelector(DOMStrings.inputDescription).value,
-            value: document.querySelector(DOMStrings.inputValue).value
+            value: parseFloat(document.querySelector(DOMStrings.inputValue).value) // converting string to a number
          };
       },
       
@@ -134,17 +134,21 @@ let controller = (function(budget, UI) {
         input = UI.getInput();
         //   console.log("input values are: ", input);
         //   console.log("input type is: ", input.type);
-        
-        // 2. Add the item to the budget controller
-        newItem = budget.addItemToArray(input.type, input.description, input.value);
-        
-        // 3. Add the item to the UI
-        UI.addItemToDom(newItem, input.type)
-        // 4. Clear the fields
-        UI.clearFields();
-        // 5. Calculate the budget
-        // 6. Display the budget on the UI
-      //   console.log("Button was clicked or Enter was pressed!");
+
+      // Validate data inputed by user
+        if (input.description !== "" && !isNaN(input.value) && input.value > 0) {
+           console.log("Validation was successfull!");
+            // 2. Add the item to the budget controller
+            newItem = budget.addItemToArray(input.type, input.description, input.value);
+            // 3. Add the item to the UI
+            UI.addItemToDom(newItem, input.type)
+            // 4. Clear the fields
+            UI.clearFields();
+            // 5. Calculate the budget
+            // 6. Display the budget on the UI   
+        } else {
+           console.log("Validation failed!");
+        }
    }
    document.querySelector(DOM.inputBtn).addEventListener("click", addItem);
    document.addEventListener('keypress', function(event){
