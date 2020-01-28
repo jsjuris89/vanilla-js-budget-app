@@ -97,7 +97,10 @@ let UIController = (function(){
       inputValue: ".add-value",
       inputBtn: ".add-btn",
       incomeContainer: ".income-list",
-      expenseContainer: ".expenses-list"
+      expenseContainer: ".expenses-list",
+      budgetLabel: ".budget-value",
+      incomeLabel: ".budget-income-value",
+      expensesLabel: ".budget-expenses-value"
    }
 
    return {
@@ -147,6 +150,11 @@ let UIController = (function(){
          document.querySelector(DOMStrings.inputValue).value = "";
          descriptionField.focus();
       },
+      displayBudget: function(obj){
+         document.querySelector(DOMStrings.budgetLabel).textContent = obj.budget;
+         document.querySelector(DOMStrings.incomeLabel).textContent = obj.totalIncome;
+         document.querySelector(DOMStrings.expensesLabel).textContent = obj.totalExpense;
+      },
 
       getDOMStrings: function() {
          return DOMStrings;
@@ -169,9 +177,10 @@ let controller = (function(budget, UI) {
       // 2. return the budget
       let budgetNow = budget.getBudget();
       // 3. Displaythe budget in the UI
-      console.log("Total budget available: ", budgetNow.budget);
-      console.log("We have earned: " + budgetNow.totalIncome + " and spend " + budgetNow.totalExpense);
-      console.log("We are spending " + budgetNow.percentage + "% of our income.");
+      // console.log("Total budget available: ", budgetNow.budget);
+      // console.log("We have earned: " + budgetNow.totalIncome + " and spend " + budgetNow.totalExpense);
+      // console.log("We are spending " + budgetNow.percentage + "% of our income.");
+      UI.displayBudget(budgetNow);
    }
    
    let addItem = function() {
