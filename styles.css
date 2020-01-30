@@ -3,11 +3,13 @@
    padding: 0;
    box-sizing: border-box;
 }
+
 body {
    /* color: #555; */
    font-family: "Verdana", sans-serif;
    position: relative;
 }
+
 .top {
    height: 60vh;
    background-image: url(./background1.jpg);
@@ -21,7 +23,7 @@ body {
    position: relative;
    max-width: 400px;
    background: rgba(255, 255, 255, .4);
-   box-shadow: 0 20px 30px rgba(0, 0, 0, .7);
+   /* box-shadow: 0 20px 30px rgba(0, 0, 0, .7); */
    padding: 15px;
 }
 .budget-title {
@@ -53,7 +55,7 @@ body {
    font-size: 18px;
 }
 
-/* Form */
+/* Input Animation Styles */
 .add {
    border-bottom: 2px solid #e7e7e7;
    border-top: 2px solid #e7e7e7;
@@ -63,6 +65,7 @@ body {
    /* width: 50%; */
    position: relative;
    height: 50px;
+   overflow: hidden;
    /* background: blue; */
 }
 .form input {
@@ -71,8 +74,10 @@ body {
    color: #595f6e;
    padding-top: 25px;
    border: none;
-   outline: none;
+   outline: none; 
+   
 }
+
 .form label {
    position: absolute;
    bottom: 0px;
@@ -82,6 +87,7 @@ body {
    /* background: blue; */
    pointer-events: none;
    border-bottom: 1px solid black;
+   
 }
 .form label::after {
    content: "";
@@ -92,6 +98,8 @@ body {
    width: 100%;
    border-bottom: 3px solid #5fa8d3;
    transform: translateX(-100%);
+   transition: transform 0.3s ease;
+
 }
 .label-text {
    position: absolute;
@@ -99,15 +107,19 @@ body {
    left: 0px;
    transition: all 0.3s ease;
 }
+
 .form input:focus + .label-name .label-text, .form input:not(:placeholder-shown) + .label-name .label-text {
    transform: translateY(-150%);
    font-size: 14px;
+   color: #5fa8d3;
+}
+.form input:focus + .label-name::after, .form input:not(:placeholder-shown) + .label-name::after {
+   transform: translateX(0%);
 }
 /* Custom SElect Box */
-
 .select-box {
    display: flex;
-   width: 400px;
+   width: 200px;
    flex-direction: column;
 }
 .select-box .options-container {
@@ -141,16 +153,13 @@ body {
    width: 32px;
    right: 10px;
    top: 5px;
-
-   transition: all 0.4s;
-   
+   transition: all 0.4s; 
 }
 .select-box .options-container.active {
    max-height: 240px;
    opacity: 1;
    overflow-y: scroll;
 }
-
 .select-box .options-container.active + .selected::after {
    transform: rotateX(180deg);
    top: -6px;
@@ -163,9 +172,7 @@ body {
 .select-box .options-container::-webkit-scrollbar-thumb {
    background: #525861;
    border-radius: 0 8px 8px 0;
-
 }
-
 .select-box .option, .selected {
    padding: 12px 24px;
    cursor: pointer;
@@ -182,8 +189,8 @@ body {
 .add-container {
    /* margin: 0 auto; */
    display: flex;
-   flex-direction: column;
-   /* justify-content: center; */
+   flex-direction: row;
+   justify-content: space-around;
    /* text-align: center; */
 }
 .add-type {
@@ -222,7 +229,7 @@ body {
 .add-type:focus, .add-description:focus, .add-value:focus {
    outline: none;
    /* border: 2px solid #28B9B5; */
-   border: 1px solid #1056cf;
+   /* border: 1px solid #1056cf; */
 }
 
 
