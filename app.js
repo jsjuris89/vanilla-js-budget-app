@@ -118,7 +118,7 @@ let budgetController = (function() {
 let UIController = (function(){
 
    let DOMStrings = {
-      inputType: ".add-type",
+      // inputType: ".add-type",
       inputDescription: ".add-description",
       inputValue: ".add-value",
       inputBtn: ".add-btn",
@@ -132,8 +132,18 @@ let UIController = (function(){
 
    return {
       getInput: function(){
+         let selectedType = function() {
+            if (document.querySelector(".selected").innerHTML == 
+            "Income") {
+               return "inc"
+            } else if (document.querySelector(".selected").innerHTML == "Expense") {
+               return "exp";
+            }
+         }
+         let type = selectedType();
          return {
-            type: document.querySelector(DOMStrings.inputType).value, 
+            // type: document.querySelector(DOMStrings.inputType).value, 
+            type: type, 
             description: document.querySelector(DOMStrings.inputDescription).value,
             value: parseFloat(document.querySelector(DOMStrings.inputValue).value)
          };
@@ -276,6 +286,9 @@ let controller = (function(budget, UI) {
    });
    document.querySelector(DOM.listsContainer).addEventListener("click", deleteItem);
 })(budgetController, UIController)
+
+
+
 
 // Custom Select Box Code
 const selected = document.querySelector(".selected");
