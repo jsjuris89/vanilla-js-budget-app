@@ -195,26 +195,20 @@ body {
    height: 160px; /* so custom select box dont move stop around when expanding */
    margin: 0 auto;
    display: flex;
-   flex-wrap: wrap;
    justify-content: space-around;
-   align-items: baseline;
    position: relative;
-}
-.add-container > div {
-   flex-grow: 1 33%;
+   /* background-color: darkgrey; */
 }
 .add-container .select-box {
-   flex-basis: 230px;
+   flex-basis: 37%;
 }
 .add-container .form {
-   flex-basis: 180px
-}
-.add-container .big-wdith {
-   flex-grow: 1;
+   flex-basis: 35%;
 }
 .add-container .small-width {
-   flex-basis: 80px;
+   flex-basis: 15%; /* if I comment this out justify-content: x doesnt work */
 }
+/* flex-basis: A% is from the parent element width */
 .add-container button {
    position: absolute;
    right: 10px;
@@ -222,10 +216,6 @@ body {
    top: 90px;
    width: 100px;
 }
-
-
-
-
 
 
 .add-type {
