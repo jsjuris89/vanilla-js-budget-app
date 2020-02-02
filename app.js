@@ -127,7 +127,8 @@ let UIController = (function(){
       budgetLabel: ".budget-value",
       incomeLabel: ".budget-income-value",
       expensesLabel: ".budget-expenses-value",
-      listsContainer: ".container"
+      listsContainer: ".container",
+      dateLabel: ".budget-title-month"
    }
 
    return {
@@ -196,6 +197,33 @@ let UIController = (function(){
          document.querySelector(DOMStrings.incomeLabel).textContent = obj.totalIncome;
          document.querySelector(DOMStrings.expensesLabel).textContent = obj.totalExpense;
       },
+      displayMonth: function() {
+         let now;
+         let year;
+         let month;
+         let months;
+
+         now = new Date();
+          // note: month is zero based, so use 11 to get December; 12 will return Jan 25, 2021
+         //  let christmas = new Date (2020, 11, 25);
+         months = [
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December"
+         ];
+         month = now.getMonth();
+         year = now.getFullYear();
+         document.querySelector(DOMStrings.dateLabel).textContent = months[month] + " " + year;
+      },
 
       getDOMStrings: function() {
          return DOMStrings;
@@ -211,6 +239,8 @@ let UIController = (function(){
 let controller = (function(budget, UI) {
 
    let DOM = UI.getDOMStrings();
+
+   UI.displayMonth();
 
    let updateBudget = function() {
       // 1. calculate the budget
