@@ -186,13 +186,48 @@ body {
 .select-box .option .radio {
    display: none;
 }
+
+/* .add {
+   height: 150px;
+} */
 .add-container {
-   /* margin: 0 auto; */
+   width: 600px;
+   height: 160px; /* so custom select box dont move stop around when expanding */
+   margin: 0 auto;
    display: flex;
-   flex-direction: row;
+   flex-wrap: wrap;
    justify-content: space-around;
-   /* text-align: center; */
+   align-items: baseline;
+   position: relative;
 }
+.add-container > div {
+   flex-grow: 1 33%;
+}
+.add-container .select-box {
+   flex-basis: 230px;
+}
+.add-container .form {
+   flex-basis: 180px
+}
+.add-container .big-wdith {
+   flex-grow: 1;
+}
+.add-container .small-width {
+   flex-basis: 80px;
+}
+.add-container button {
+   position: absolute;
+   right: 10px;
+   bottom: 10px;
+   top: 90px;
+   width: 100px;
+}
+
+
+
+
+
+
 .add-type {
    width: 70px;
    height: 40px;
@@ -206,7 +241,7 @@ body {
    /* background-color: #fff; */
    font-size: 14px;
    padding: 12px 15px;
-   margin-right: 10px;
+   /* margin-right: 10px; */
 }
 .add-description {
    width: 400px;
