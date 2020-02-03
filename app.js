@@ -222,7 +222,7 @@ let UIController = (function(){
          ];
          month = now.getMonth();
          year = now.getFullYear();
-         document.querySelector(DOMStrings.dateLabel).textContent = months[month] + " " + year;
+         document.querySelector(DOMStrings.dateLabel).textContent = year + " " + months[month];
       },
 
       getDOMStrings: function() {
@@ -335,3 +335,14 @@ optionsList.forEach(o => {
       optionsContainer.classList.remove("active");
    })
 })
+
+// Calendar picker
+let myCalendar = new VanillaCalendar({
+   selector: "#myCalendar"
+})
+
+let calendarBody = document.querySelector(".vanilla-calendar-body");
+calendarBody.onclick = function(){
+   let selectedDate = calendarBody.querySelector(".vanilla-calendar-date--selected").getAttribute("data-calendar-date");
+   console.log("Selected date is: " + selectedDate);
+}
