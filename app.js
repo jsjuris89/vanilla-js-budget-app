@@ -1,15 +1,17 @@
 // Budget Controller
 let budgetController = (function() {
 
-   let Expense = function(id, description, value) {
+   let Expense = function(id, description, value, date) {
       this.id = id;
       this.description = description;
       this.value = value;
+      this.date = date;
    };
-   let Income = function(id, description, value) {
+   let Income = function(id, description, value, date) {
       this.id = id;
       this.description = description;
       this.value = value;
+      this.date = date;
    };
 
   let data = {
@@ -36,7 +38,7 @@ let budgetController = (function() {
   };
 
   return {
-     addItemToArray: function(type, desc, val) {
+     addItemToArray: function(type, desc, val, date) {
         let newItem;
         let ID;
 
@@ -47,9 +49,9 @@ let budgetController = (function() {
          }
             
          if (type === "exp") {
-            newItem = new Expense(ID, desc, val);
+            newItem = new Expense(ID, desc, val, date);
          } else if (type === "inc") {
-            newItem = new Income(ID, desc, val);
+            newItem = new Income(ID, desc, val, date);
          }
          data.allItems[type].push(newItem);
 
@@ -128,7 +130,8 @@ let UIController = (function(){
       incomeLabel: ".budget-income-value",
       expensesLabel: ".budget-expenses-value",
       listsContainer: ".container",
-      dateLabel: ".budget-title-month"
+      dateLabel: ".budget-title-month",
+      itemDate: ".vanilla-calendar-date--selected"
    }
 
    return {
@@ -146,7 +149,8 @@ let UIController = (function(){
             // type: document.querySelector(DOMStrings.inputType).value, 
             type: type, 
             description: document.querySelector(DOMStrings.inputDescription).value,
-            value: parseFloat(document.querySelector(DOMStrings.inputValue).value)
+            value: parseFloat(document.querySelector(DOMStrings.inputValue).value),
+            date: document.querySelector(DOMStrings.itemDate).getAttribute("data-calendar-date")
          };
       },
       
@@ -260,10 +264,12 @@ let controller = (function(budget, UI) {
         // 1. Get the input data from user
         input = UI.getInput();
 
+      //   console.log(input.date);
+
       // Validate data inputed by user
         if (input.description !== "" && !isNaN(input.value) && input.value > 0) {
             // 2. Add the item to the budget controller
-            newItem = budget.addItemToArray(input.type, input.description, input.value);
+            newItem = budget.addItemToArray(input.type, input.description, input.value, input.date);
             // 3.1 Add the item to the UI
             UI.addItemToDom(newItem, input.type)
             // 3.2 Clear the fields
@@ -341,8 +347,9 @@ let myCalendar = new VanillaCalendar({
    selector: "#myCalendar"
 })
 
-let calendarBody = document.querySelector(".vanilla-calendar-body");
-calendarBody.onclick = function(){
-   let selectedDate = calendarBody.querySelector(".vanilla-calendar-date--selected").getAttribute("data-calendar-date");
-   console.log("Selected date is: " + selectedDate);
-}
+// let calendarBody = document.querySelector(".vanilla-calendar-body");
+// onclick instead of regular eventListenever was used because of conflict with vanilla-calendar library click events
+// calendarBody.onclick = function(){
+//    let selectedDate = calendarBody.querySelector(".vanilla-calendar-date--selected").getAttribute("data-calendar-date");
+//    console.log("Selected date is: " + selectedDate);
+// }

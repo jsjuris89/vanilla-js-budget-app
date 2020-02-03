@@ -313,3 +313,16 @@ body {
 .item-delete-btn:hover {
    background-position: right;
 }
+
+/* Fix layout after calendar was added */
+.add {
+   display: flex;
+   justify-content: center;
+}
+.add .vanilla-calendar {
+   margin: 0;
+   margin-bottom: 10px;
+}
+.add .add-container {
+   margin: 0;
+}
