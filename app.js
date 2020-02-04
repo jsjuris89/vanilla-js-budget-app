@@ -27,6 +27,44 @@ let budgetController = (function() {
      percentage: -1
   };
 
+  let monthData = {
+     jan: {
+        expenses: 0
+     },
+     feb: {
+        expenses: 0
+     },
+     mar: {
+        expenses: 0
+     },
+     apr: {
+        expenses: 0
+     },
+     may: {
+        expenses: 0
+     },
+     jun: {
+        expenses: 0
+     },
+     jul: {
+        expenses: 0
+     },
+     aug: {
+        expenses: 0
+     },
+     sep: {
+        expenses: 0
+     },
+     oct: {
+        expenses: 0
+     },
+     nov: {
+        expenses: 0
+     },
+     dec: {
+        expenses: 0
+     }  
+  }
 
 
   let calculateTotal = function(type) {
@@ -36,6 +74,7 @@ let budgetController = (function() {
       });
       data.totals[type] = sum;
   };
+
 
   return {
      addItemToArray: function(type, desc, val, date) {
@@ -58,27 +97,15 @@ let budgetController = (function() {
          return newItem;
       },
       deleteItemFromArray: function(type, id) {
-         // code
          let ids;
          let index;
 
-         /*
-         f.e. id = 6
-         data.allItems[type][id] isn't a solution because of --->
-         ids = [1, 2, 4, 6, 8] :: index would be 3
-         Solution:
-         create an array with all ids and then find the index of the element with the id to be removed
-         */
         ids = data.allItems[type].map(function(currentElement){
            return currentElement.id;
         });
 
-        // find the index of the element to delete from the new array ids
-        // returns index of the id passed through
         index = ids.indexOf(id);
 
-         // now delete that item from the array
-         // if not found, it will return -1
          if (index !== -1) {
             data.allItems[type].splice(index, 1);
          }
@@ -88,7 +115,6 @@ let budgetController = (function() {
          calculateTotal('exp');
          calculateTotal('inc');
 
-         // Calculate the budget = income - expenses
          data.budget = data.totals.inc - data.totals.exp;
 
          // Calculate the percentage of income that we spent
@@ -96,6 +122,70 @@ let budgetController = (function() {
             data.percentage = Math.round((data.totals.exp / data.totals.inc) * 100);
          } else {
             data.percentage = -1;
+         }
+      },
+      getMonthExpenses: function(date, type, value) {
+         let inputDate = new Date(date);
+
+         months = [
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December"
+         ];
+
+         // let year = inputDate.getFullYear();
+         let month = months[inputDate.getMonth()];
+         // let monthDate = inputDate.getDate();
+         console.log("Year: " + year + " and month: " + month + " and date: " + monthDate);
+
+         if (type == "exp"){
+            switch (month) {
+               case "January":
+                  monthData.jan.expenses = monthData.jan.expenses + value;
+                  break;
+               case "February":
+                  monthData.feb.expenses = monthData.feb.expenses + value;
+                  break;
+               case "March":
+                  monthData.mar.expenses = monthData.mar.expenses + value;
+                  break;
+               case "April":
+                  monthData.apr.expenses = monthData.apr.expenses + value;
+                  break;
+               case "May":
+                  monthData.may.expenses = monthData.may.expenses + value;
+                  break;
+               case "June":
+                  monthData.jun.expenses = monthData.jun.expenses + value;
+                  break;
+               case "July":
+                  monthData.jul.expenses = monthData.jul.expenses + value;
+                  break;
+               case "August":
+                  monthData.aug.expenses = monthData.aug.expenses + value;
+                  break;
+               case "September":
+                  monthData.sep.expenses = monthData.sep.expenses + value;
+                  break;
+               case "October":
+                  monthData.oct.expenses = monthData.oct.expenses + value;
+                  break;
+               case "November":
+                  monthData.nov.expenses = monthData.nov.expenses + value;
+                  break;
+               case "December":
+                  monthData.dec.expenses = monthData.dec.expenses + value;
+                  break;
+            }
          }
       },
       getBudget: function() {
@@ -108,6 +198,9 @@ let budgetController = (function() {
       },
       testData: function() {
          console.log(data);
+      },
+      testMonthData: function() {
+         console.log(monthData);
       }
      }
 })();
@@ -120,7 +213,6 @@ let budgetController = (function() {
 let UIController = (function(){
 
    let DOMStrings = {
-      // inputType: ".add-type",
       inputDescription: ".add-description",
       inputValue: ".add-value",
       inputBtn: ".add-btn",
@@ -136,7 +228,7 @@ let UIController = (function(){
 
    return {
       getInput: function(){
-         let selectedType = function() {
+         let type = function() {
             if (document.querySelector(".selected").innerHTML == 
             "Income") {
                return "inc"
@@ -144,10 +236,8 @@ let UIController = (function(){
                return "exp";
             }
          }
-         let type = selectedType();
          return {
-            // type: document.querySelector(DOMStrings.inputType).value, 
-            type: type, 
+            type: type(), 
             description: document.querySelector(DOMStrings.inputDescription).value,
             value: parseFloat(document.querySelector(DOMStrings.inputValue).value),
             date: document.querySelector(DOMStrings.itemDate).getAttribute("data-calendar-date")
@@ -208,8 +298,6 @@ let UIController = (function(){
          let months;
 
          now = new Date();
-          // note: month is zero based, so use 11 to get December; 12 will return Jan 25, 2021
-         //  let christmas = new Date (2020, 11, 25);
          months = [
             "January",
             "February",
@@ -252,9 +340,6 @@ let controller = (function(budget, UI) {
       // 2. return the budget
       let budgetNow = budget.getBudget();
       // 3. Displaythe budget in the UI
-      // console.log("Total budget available: ", budgetNow.budget);
-      // console.log("We have earned: " + budgetNow.totalIncome + " and spend " + budgetNow.totalExpense);
-      // console.log("We are spending " + budgetNow.percentage + "% of our income.");
       UI.displayBudget(budgetNow);
    }
    
@@ -264,14 +349,14 @@ let controller = (function(budget, UI) {
         // 1. Get the input data from user
         input = UI.getInput();
 
-      //   console.log(input.date);
-
       // Validate data inputed by user
         if (input.description !== "" && !isNaN(input.value) && input.value > 0) {
             // 2. Add the item to the budget controller
             newItem = budget.addItemToArray(input.type, input.description, input.value, input.date);
+            // Extra filter by month expenses
+            budget.getMonthExpenses(input.date, input.type, input.value);
             // 3.1 Add the item to the UI
-            UI.addItemToDom(newItem, input.type)
+            UI.addItemToDom(newItem, input.type);
             // 3.2 Clear the fields
             UI.clearFields();
             // 4. Calculate and update budget
@@ -293,11 +378,6 @@ let controller = (function(budget, UI) {
 
       if (itemID) {
          // use split - JS converts string to an Object and will return and array
-         /*
-			  JavaScript automatically puts a wrapper around the String and 
-			  convert it from a primitive to an object. And then this object
-			  has access to a lot of string methods. 
-			*/
          splitID = itemID.split("-");
          console.log("splitID is: " + splitID);
          type = splitID[0];
