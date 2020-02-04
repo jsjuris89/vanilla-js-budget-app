@@ -1,3 +1,7 @@
+// NEXT Add delete functionality with monthData object
+
+
+
 // Budget Controller
 let budgetController = (function() {
 
@@ -30,40 +34,100 @@ let budgetController = (function() {
 
   let monthData = {
      jan: {
-        expenses: 0
+        totalExpenses: 0,
+        categories: {
+           food: 0,
+           transportation: 0,
+           other: 0
+        }
      },
      feb: {
-        expenses: 0
+        totalExpenses: 0,
+        categories: {
+            food: 0,
+            transportation: 0,
+            other: 0
+        }
      },
      mar: {
-        expenses: 0
+        totalExpenses: 0,
+        categories: {
+           food: 0,
+           transportation: 0,
+           other: 0
+        }
      },
      apr: {
-        expenses: 0
+        totalExpenses: 0,
+        categories: {
+           food: 0,
+           transportation: 0,
+           other: 0
+        }
      },
      may: {
-        expenses: 0
+        totalExpenses: 0,
+        categories: {
+           food: 0,
+           transportation: 0,
+           other: 0
+        }
      },
      jun: {
-        expenses: 0
+        totalExpenses: 0,
+        categories: {
+           food: 0,
+           transportation: 0,
+           other: 0
+        }
      },
      jul: {
-        expenses: 0
+        totalExpenses: 0,
+        categories: {
+           food: 0,
+           transportation: 0,
+           other: 0
+        }
      },
      aug: {
-        expenses: 0
+        totalExpenses: 0,
+        categories: {
+           food: 0,
+           transportation: 0,
+           other: 0
+        }
      },
      sep: {
-        expenses: 0
+        totalExpenses: 0,
+        categories: {
+           food: 0,
+           transportation: 0,
+           other: 0
+        }
      },
      oct: {
-        expenses: 0
+        totalExpenses: 0,
+        categories: {
+           food: 0,
+           transportation: 0,
+           other: 0
+        }
      },
      nov: {
-        expenses: 0
+        totalExpenses: 0,
+        categories: {
+           food: 0,
+           transportation: 0,
+           other: 0
+        }
      },
      dec: {
-        expenses: 0
+        totalExpenses: 0,
+        categories: {
+           food: 0,
+           transportation: 0,
+           other: 0
+        }
      }  
   }
 
@@ -75,6 +139,7 @@ let budgetController = (function() {
       });
       data.totals[type] = sum;
   };
+
 
 
   return {
@@ -116,14 +181,16 @@ let budgetController = (function() {
          calculateTotal('exp');
          calculateTotal('inc');
 
+
          data.budget = data.totals.inc - data.totals.exp;
 
          // Calculate the percentage of income that we spent
-         if (data.totals.inc > 0) {
-            data.percentage = Math.round((data.totals.exp / data.totals.inc) * 100);
-         } else {
-            data.percentage = -1;
-         }
+         // -----UNUSED yet-----
+         // if (data.totals.inc > 0) {
+         //    data.percentage = Math.round((data.totals.exp / data.totals.inc) * 100);
+         // } else {
+         //    data.percentage = -1;
+         // }
       },
       getMonthExpenses: function(date, type, value) {
          let inputDate = new Date(date);
@@ -143,48 +210,65 @@ let budgetController = (function() {
             "December"
          ];
 
-         // let year = inputDate.getFullYear();
          let month = months[inputDate.getMonth()];
-         // let monthDate = inputDate.getDate();
-         // console.log("Year: " + year + " and month: " + month + " and date: " + monthDate);
 
          if (type == "exp"){
             switch (month) {
                case "January":
-                  monthData.jan.expenses = monthData.jan.expenses + value;
+                  // insert code same as in february
                   break;
+                  // Only this correct syntax
                case "February":
-                  monthData.feb.expenses = monthData.feb.expenses + value;
+                  let foodSum = 0;
+                  let transportationSum = 0;
+                  let otherSum = 0;
+                  // let allCategorySum = 0
+                  data.allItems.exp.forEach(function (element) {
+                     if (element.category == "food") {
+                        foodSum = foodSum + element.value;
+                        monthData.feb.categories.food = foodSum;
+                        // console.log("food sum is: " + monthData.feb.categories.food)
+                        // console.log(foodSum);
+                     } else if (element.category == "transportation") {
+                        transportationSum = transportationSum + element.value;
+                        monthData.feb.categories.transportation = transportationSum;
+                     } else if (element.category == "other") {
+                        otherSum = otherSum + element.value;
+                        monthData.feb.categories.other = otherSum;
+                     }
+                  })
+                  // Sum all 3 categories together for total expenses in a month
+                  monthData.feb.totalExpenses = monthData.feb.categories.food + monthData.feb.categories.transportation + monthData.feb.categories.other;
                   break;
                case "March":
-                  monthData.mar.expenses = monthData.mar.expenses + value;
+                  // insert code same as in february
                   break;
                case "April":
-                  monthData.apr.expenses = monthData.apr.expenses + value;
+                  // insert code same as in february
                   break;
                case "May":
-                  monthData.may.expenses = monthData.may.expenses + value;
+                  // insert code same as in february
                   break;
                case "June":
-                  monthData.jun.expenses = monthData.jun.expenses + value;
+                  // insert code same as in february
                   break;
                case "July":
-                  monthData.jul.expenses = monthData.jul.expenses + value;
+                  // insert code same as in february
                   break;
                case "August":
-                  monthData.aug.expenses = monthData.aug.expenses + value;
+                  // insert code same as in february
                   break;
                case "September":
-                  monthData.sep.expenses = monthData.sep.expenses + value;
+                  // insert code same as in february
                   break;
                case "October":
-                  monthData.oct.expenses = monthData.oct.expenses + value;
+                  // insert code same as in february
                   break;
                case "November":
-                  monthData.nov.expenses = monthData.nov.expenses + value;
+                  // insert code same as in february
                   break;
                case "December":
-                  monthData.dec.expenses = monthData.dec.expenses + value;
+                  // insert code same as in february
                   break;
             }
          }
