@@ -145,7 +145,7 @@ let budgetController = (function() {
          // let year = inputDate.getFullYear();
          let month = months[inputDate.getMonth()];
          // let monthDate = inputDate.getDate();
-         console.log("Year: " + year + " and month: " + month + " and date: " + monthDate);
+         // console.log("Year: " + year + " and month: " + month + " and date: " + monthDate);
 
          if (type == "exp"){
             switch (month) {
@@ -407,6 +407,7 @@ let controller = (function(budget, UI) {
 
 
 // Custom Select Box Code
+// Income / Expense
 const selected = document.querySelector(".selected");
 const optionsContainer = document.querySelector(".options-container");
 const optionsList = document.querySelectorAll(".option");
@@ -421,6 +422,25 @@ optionsList.forEach(o => {
       optionsContainer.classList.remove("active");
    })
 })
+// Food / Transportation / Other
+// -----------check later ------------
+const selected2 = document.querySelector(".selected-2");
+const optionsContainer2 = document.querySelector(".options-container-2");
+const optionsList2 = document.querySelectorAll(".options-container-2 .option-2");
+
+selected2.addEventListener("click", () => {
+   optionsContainer2.classList.toggle("active");
+});
+optionsList2.forEach(o => {
+   o.addEventListener("click", () => {
+      selected2.innerHTML = o.querySelector("label").innerHTML;
+      optionsContainer2.classList.remove("active");
+   })
+})
+
+
+
+
 
 // Calendar picker
 let myCalendar = new VanillaCalendar({
