@@ -1,8 +1,9 @@
 // Budget Controller
 let budgetController = (function() {
 
-   let Expense = function(id, description, value, date) {
+   let Expense = function(id, category, description, value, date) {
       this.id = id;
+      this.category = category
       this.description = description;
       this.value = value;
       this.date = date;
@@ -77,7 +78,7 @@ let budgetController = (function() {
 
 
   return {
-     addItemToArray: function(type, desc, val, date) {
+     addItemToArray: function(type, category, desc, val, date) {
         let newItem;
         let ID;
 
@@ -88,7 +89,7 @@ let budgetController = (function() {
          }
             
          if (type === "exp") {
-            newItem = new Expense(ID, desc, val, date);
+            newItem = new Expense(ID, category, desc, val, date);
          } else if (type === "inc") {
             newItem = new Income(ID, desc, val, date);
          }
@@ -236,8 +237,23 @@ let UIController = (function(){
                return "exp";
             }
          }
+         let category = function() {
+            switch (document.querySelector(".selected-2").innerHTML) {
+               case "Food":
+                  console.log("Food category was chosen.");
+                  return "food";
+               case "Transportation":
+                  console.log("Transportation category was chosen.")
+                  return "transportation";
+               case "Other":
+                  console.log("Other category was chosen.")
+                  return "other";
+            }
+
+         }
          return {
             type: type(), 
+            category: category(),
             description: document.querySelector(DOMStrings.inputDescription).value,
             value: parseFloat(document.querySelector(DOMStrings.inputValue).value),
             date: document.querySelector(DOMStrings.itemDate).getAttribute("data-calendar-date")
@@ -352,7 +368,7 @@ let controller = (function(budget, UI) {
       // Validate data inputed by user
         if (input.description !== "" && !isNaN(input.value) && input.value > 0) {
             // 2. Add the item to the budget controller
-            newItem = budget.addItemToArray(input.type, input.description, input.value, input.date);
+            newItem = budget.addItemToArray(input.type, input.category, input.description, input.value, input.date);
             // Extra filter by month expenses
             budget.getMonthExpenses(input.date, input.type, input.value);
             // 3.1 Add the item to the UI
