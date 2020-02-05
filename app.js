@@ -239,7 +239,8 @@ let budgetController = (function() {
                   })
                   // Sum all 3 categories together for total expenses in a month
                   monthData.feb.totalExpenses = monthData.feb.categories.food + monthData.feb.categories.transportation + monthData.feb.categories.other;
-                  break;
+                  // break;
+                  return monthData.feb
                case "March":
                   // insert code same as in february
                   break;
@@ -273,6 +274,9 @@ let budgetController = (function() {
             }
          }
       },
+      getMonthData: function() {
+         return monthData;
+      },
       getBudget: function() {
          return {
             budget: data.budget,
@@ -281,6 +285,7 @@ let budgetController = (function() {
             percentage: data.percentage
          }
       },
+
       testData: function() {
          console.log(data);
       },
@@ -421,14 +426,47 @@ let UIController = (function(){
          return DOMStrings;
       }
    };
+
 })();
 
 
 
+// Chart MODULE
+let chartJS = (function(budget){
 
+   
+   let monthData = budget.getMonthData();
+   // console.log(monthData.feb);
+   // console.log(monthData.feb.categories[Object.keys(monthData.feb.categories)[0]])
+   // console.log("yuuuuuuuuuuuuuuuuuuuu: " + monthData.feb.categories[Object.keys(monthData.feb.categories)[0]])
+   
+   
+   
+   return {
+      createChart: function() {
+         let ctx = document.getElementById('myChart').getContext('2d');
+         let chart = new Chart(ctx, {
+            type: "pie",
+
+            data: {
+               labels: [Object.keys(monthData.feb.categories)[0], Object.keys(monthData.feb.categories)[1], Object.keys(monthData.feb.categories)[2]],
+               // labels: ["food", "transportation", "other"],
+               datasets: [{
+                  label: "My expenses by category",
+                  backgroundColor: ['rgb(30, 136, 15)', 'rgb(49, 98, 190)', 'rgb(158, 37, 148)'],
+                  borderColor: 'rgb(255, 255, 255)',
+                  // data: [monthData.feb.categories.food, monthData.feb.categories.transportation, monthData.feb.categories.other,]
+                  data: [monthData.feb.categories[Object.keys(monthData.feb.categories)[0]], monthData.feb.categories[Object.keys(monthData.feb.categories)[1]], monthData.feb.categories[Object.keys(monthData.feb.categories)[2]]]
+               }]
+            }
+         });
+      }
+   }
+
+})(budgetController)
 
 // Global App Controller
-let controller = (function(budget, UI) {
+let controller = (function(budget, UI, chart) {
 
    let DOM = UI.getDOMStrings();
 
@@ -461,7 +499,8 @@ let controller = (function(budget, UI) {
             UI.clearFields();
             // 4. Calculate and update budget
             updateBudget();
-            // 5. Display the budget on the UI   
+            // 5. Display the budget on the UI 
+            chart.createChart();
         } else {
            console.log("Validation failed!");
         }
@@ -501,7 +540,7 @@ let controller = (function(budget, UI) {
       }
    });
    document.querySelector(DOM.listsContainer).addEventListener("click", deleteItem);
-})(budgetController, UIController)
+})(budgetController, UIController, chartJS)
 
 
 
@@ -547,9 +586,4 @@ let myCalendar = new VanillaCalendar({
    selector: "#myCalendar"
 })
 
-// let calendarBody = document.querySelector(".vanilla-calendar-body");
-// onclick instead of regular eventListenever was used because of conflict with vanilla-calendar library click events
-// calendarBody.onclick = function(){
-//    let selectedDate = calendarBody.querySelector(".vanilla-calendar-date--selected").getAttribute("data-calendar-date");
-//    console.log("Selected date is: " + selectedDate);
-// }
+
