@@ -432,7 +432,7 @@ let UIController = (function(){
 
 
 // Chart MODULE
-let chartJS = (function(budget){
+let myCharts = (function(budget){
 
    
    let monthData = budget.getMonthData();
@@ -445,7 +445,7 @@ let chartJS = (function(budget){
    return {
       createChart: function() {
          let ctx = document.getElementById('myChart').getContext('2d');
-         let chart = new Chart(ctx, {
+         let newChart = new Chart(ctx, {
             type: "pie",
 
             data: {
@@ -460,15 +460,19 @@ let chartJS = (function(budget){
                }]
             }
          });
+         return expensesChart = newChart;
       }
    }
 
 })(budgetController)
 
 // Global App Controller
-let controller = (function(budget, UI, chart) {
+let controller = (function(budget, UI, charts) {
 
    let DOM = UI.getDOMStrings();
+   let monthData = budget.getMonthData();
+   let myChart = charts.createChart();
+
 
    UI.displayMonth();
 
@@ -499,8 +503,17 @@ let controller = (function(budget, UI, chart) {
             UI.clearFields();
             // 4. Calculate and update budget
             updateBudget();
-            // 5. Display the budget on the UI 
-            chart.createChart();
+            
+            // Validate if there is 1 chart already dont create new one then just update current one
+            
+            console.log("Return variable from myCharts module: " + expensesChart /* this is return expensesChart = newChart; from myCharts IIFE */);
+            // Create update function when data changed
+            function updateChart() {
+               // expensesChart.data.datasets[0].data = [2, 15, 2];
+               expensesChart.data.datasets[0].data = [monthData.feb.categories[Object.keys(monthData.feb.categories)[0]], monthData.feb.categories[Object.keys(monthData.feb.categories)[1]], monthData.feb.categories[Object.keys(monthData.feb.categories)[2]]];
+               expensesChart.update();
+            }
+            updateChart();
         } else {
            console.log("Validation failed!");
         }
@@ -540,7 +553,7 @@ let controller = (function(budget, UI, chart) {
       }
    });
    document.querySelector(DOM.listsContainer).addEventListener("click", deleteItem);
-})(budgetController, UIController, chartJS)
+})(budgetController, UIController, myCharts)
 
 
 
