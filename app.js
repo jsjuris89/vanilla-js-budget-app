@@ -219,7 +219,16 @@ let budgetController = (function() {
                   let foodSum = 0;
                   let transportationSum = 0;
                   let otherSum = 0;
-                  // let allCategorySum = 0
+
+                  // Since in our app getMonthExpenses basically always make at least 1 value in monthData.feb.categories.X = some value (never a 0) we will just check in data.AllItems.exp array has any element with a specific value. F.E. category: "food"
+                  // If it does not have it then reset back that category to 0! Our app works fine (updateChart function) until the very last element then we need to check in original data structure if there is any array item with a key:value as like category: "food" / category: "transportation" etc
+                  
+                  if (data.allItems.exp.filter(e => e.category === "other").length > 0) {
+                     console.log("Now we have category with name ----> OTHER")
+                  } else {
+                     monthData.feb.categories.other = otherSum;
+                  }
+
                   data.allItems.exp.forEach(function (element) {
                      if (element.category == "food") {
                         foodSum = foodSum + element.value;
@@ -237,6 +246,7 @@ let budgetController = (function() {
                   // Sum all 3 categories together for total expenses in a month
                   monthData.feb.totalExpenses = monthData.feb.categories.food + monthData.feb.categories.transportation + monthData.feb.categories.other;
                   // break;
+                  
                   return monthData.feb
                case "March":
                   // insert code same as in february
@@ -285,6 +295,9 @@ let budgetController = (function() {
 
       testData: function() {
          console.log(data);
+      },
+      getData: function() {
+         return data;
       },
       testMonthData: function() {
          console.log(monthData);
@@ -440,7 +453,6 @@ let myCharts = (function(budget){
    // console.log("yuuuuuuuuuuuuuuuuuuuu: " + monthData.feb.categories[Object.keys(monthData.feb.categories)[0]])
    
    
-   
    return {
       createChart: function() {
          let ctx = document.getElementById('myChart').getContext('2d');
@@ -462,9 +474,15 @@ let myCharts = (function(budget){
          return expensesChart = newChart;
       },
       updateChart: function() {
+
+         console.log(budgetController.getData().allItems.exp);
+         
+         console.log("update chart function launched!");
          expensesChart.data.datasets[0].data = [monthData.feb.categories[Object.keys(monthData.feb.categories)[0]], monthData.feb.categories[Object.keys(monthData.feb.categories)[1]], monthData.feb.categories[Object.keys(monthData.feb.categories)[2]]];
          expensesChart.update();
-         console.log("expenses Chart ---------- " + expensesChart);
+
+         // Delete whole label date if there are no data (when user deletes a single item from f.e. food category in February)
+
       }
    }
 
@@ -474,17 +492,11 @@ let myCharts = (function(budget){
 let controller = (function(budget, UI, charts) {
 
    let DOM = UI.getDOMStrings();
-   let monthData = budget.getMonthData();
-   let myChart = charts.createChart();
-   // function updateChart() {
-   //    // expensesChart.data.datasets[0].data = [2, 15, 2];
-   //    expensesChart.data.datasets[0].data = [monthData.feb.categories[Object.keys(monthData.feb.categories)[0]], monthData.feb.categories[Object.keys(monthData.feb.categories)[1]], monthData.feb.categories[Object.keys(monthData.feb.categories)[2]]];
-   //    expensesChart.update();
-   //    console.log("expenses Chart ---------- " + expensesChart);
-   // }
 
 
    UI.displayMonth();
+   myCharts.createChart();
+
 
    let updateBudget = function() {
       // 1. calculate the budget
@@ -511,15 +523,13 @@ let controller = (function(budget, UI, charts) {
             UI.addItemToDom(newItem, input.type);
             // 3.2 Clear the fields
             UI.clearFields();
+
+            // ------------
+            myCharts.updateChart();
             // 4. Calculate and update budget
             updateBudget();
             
-            // Validate if there is 1 chart already dont create new one then just update current one
-            
-            console.log("Return variable from myCharts module: " + expensesChart /* this is return expensesChart = newChart; from myCharts IIFE */);
-            // Create update function when data changed
-            
-            myCharts.updateChart();
+            // myCharts.updateChart();
         } else {
            console.log("Validation failed!");
         }
@@ -532,7 +542,7 @@ let controller = (function(budget, UI, charts) {
       let ID;
       // console.log("date is : " + event.target.parentElement.parentElement.getAttribute("data-date"));
       let deleteDate = event.target.parentElement.parentElement.getAttribute("data-date");
-      console.log("delete Data is ---->" + deleteDate);
+      console.log("delete date is ---->" + deleteDate);
       // console.log(event.target.parentElement.parentElement);
       itemID = event.target.parentElement.parentElement.id;
 
@@ -541,7 +551,7 @@ let controller = (function(budget, UI, charts) {
          splitID = itemID.split("-");
          // console.log("splitID is: " + splitID);
          type = splitID[0];
-         console.log("type is: " + type);
+         // console.log("type is: " + type);
          ID = parseInt(splitID[1]);
          console.log("ID is: " + ID);
       }
@@ -549,9 +559,9 @@ let controller = (function(budget, UI, charts) {
 
       // 1. delete the item from the data structure
       budget.deleteItemFromArray(type, ID);
-      // 1.1 ---------
+      // 1.1 ---------.
       budget.getMonthExpenses(deleteDate, type);
-      updateChart();
+      myCharts.updateChart();
 
       
 
@@ -559,7 +569,6 @@ let controller = (function(budget, UI, charts) {
       UI.deleteItemFromDom(itemID);
       // 3. Update and show the new budget
       updateBudget();
-      updateChart();
    };
    document.querySelector(DOM.inputBtn).addEventListener("click", addItem);
    document.addEventListener('keypress', function(event){
