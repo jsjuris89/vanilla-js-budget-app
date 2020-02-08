@@ -1,6 +1,3 @@
-// NEXT Add delete functionality with monthData object
-
-
 
 // Budget Controller
 let budgetController = (function() {
@@ -192,7 +189,7 @@ let budgetController = (function() {
          //    data.percentage = -1;
          // }
       },
-      getMonthExpenses: function(date, type, value) {
+      getMonthExpenses: function(date, type) {
          let inputDate = new Date(date);
 
          months = [
@@ -353,6 +350,7 @@ let UIController = (function(){
          let element;
          let html;
          let newHtml;
+         console.log("object details ----- : " + obj);
 
          if (type === "inc") {
             element = DOMStrings.incomeContainer;
@@ -365,7 +363,7 @@ let UIController = (function(){
                      '</div>';
          } else if (type === "exp") {
             element = DOMStrings.expenseContainer;
-            html = '<div class="item" id="exp-%id%">' +
+            html = '<div class="item" id="exp-%id%" data-date="%date%">' +
                      '<div class="item-description">%description%</div>' +
                         '<div class="item-value">%value%</div>' +
                         '<div class="item-delete">' +
@@ -376,6 +374,7 @@ let UIController = (function(){
          newHtml = html.replace('%id%', obj.id);
          newHtml = newHtml.replace('%description%', obj.description);
          newHtml = newHtml.replace('%value%', obj.value);
+         newHtml = newHtml.replace('%date%', obj.date);
 
          // insert HTML into the DOM
          document.querySelector(element).insertAdjacentHTML('beforeend', newHtml);
@@ -461,6 +460,11 @@ let myCharts = (function(budget){
             }
          });
          return expensesChart = newChart;
+      },
+      updateChart: function() {
+         expensesChart.data.datasets[0].data = [monthData.feb.categories[Object.keys(monthData.feb.categories)[0]], monthData.feb.categories[Object.keys(monthData.feb.categories)[1]], monthData.feb.categories[Object.keys(monthData.feb.categories)[2]]];
+         expensesChart.update();
+         console.log("expenses Chart ---------- " + expensesChart);
       }
    }
 
@@ -472,6 +476,12 @@ let controller = (function(budget, UI, charts) {
    let DOM = UI.getDOMStrings();
    let monthData = budget.getMonthData();
    let myChart = charts.createChart();
+   // function updateChart() {
+   //    // expensesChart.data.datasets[0].data = [2, 15, 2];
+   //    expensesChart.data.datasets[0].data = [monthData.feb.categories[Object.keys(monthData.feb.categories)[0]], monthData.feb.categories[Object.keys(monthData.feb.categories)[1]], monthData.feb.categories[Object.keys(monthData.feb.categories)[2]]];
+   //    expensesChart.update();
+   //    console.log("expenses Chart ---------- " + expensesChart);
+   // }
 
 
    UI.displayMonth();
@@ -496,7 +506,7 @@ let controller = (function(budget, UI, charts) {
             // 2. Add the item to the budget controller
             newItem = budget.addItemToArray(input.type, input.category, input.description, input.value, input.date);
             // Extra filter by month expenses
-            budget.getMonthExpenses(input.date, input.type, input.value);
+            budget.getMonthExpenses(input.date, input.type);
             // 3.1 Add the item to the UI
             UI.addItemToDom(newItem, input.type);
             // 3.2 Clear the fields
@@ -508,12 +518,8 @@ let controller = (function(budget, UI, charts) {
             
             console.log("Return variable from myCharts module: " + expensesChart /* this is return expensesChart = newChart; from myCharts IIFE */);
             // Create update function when data changed
-            function updateChart() {
-               // expensesChart.data.datasets[0].data = [2, 15, 2];
-               expensesChart.data.datasets[0].data = [monthData.feb.categories[Object.keys(monthData.feb.categories)[0]], monthData.feb.categories[Object.keys(monthData.feb.categories)[1]], monthData.feb.categories[Object.keys(monthData.feb.categories)[2]]];
-               expensesChart.update();
-            }
-            updateChart();
+            
+            myCharts.updateChart();
         } else {
            console.log("Validation failed!");
         }
@@ -524,27 +530,36 @@ let controller = (function(budget, UI, charts) {
       let splitID;
       let type;
       let ID;
-      // console.log(event.target);
-      console.log(event.target.parentElement.parentElement.id);
+      // console.log("date is : " + event.target.parentElement.parentElement.getAttribute("data-date"));
+      let deleteDate = event.target.parentElement.parentElement.getAttribute("data-date");
+      console.log("delete Data is ---->" + deleteDate);
+      // console.log(event.target.parentElement.parentElement);
       itemID = event.target.parentElement.parentElement.id;
 
       if (itemID) {
          // use split - JS converts string to an Object and will return and array
          splitID = itemID.split("-");
-         console.log("splitID is: " + splitID);
+         // console.log("splitID is: " + splitID);
          type = splitID[0];
          console.log("type is: " + type);
          ID = parseInt(splitID[1]);
          console.log("ID is: " + ID);
       }
 
+
       // 1. delete the item from the data structure
       budget.deleteItemFromArray(type, ID);
+      // 1.1 ---------
+      budget.getMonthExpenses(deleteDate, type);
+      updateChart();
+
+      
 
       // 2. delete the item from the UI
       UI.deleteItemFromDom(itemID);
       // 3. Update and show the new budget
       updateBudget();
+      updateChart();
    };
    document.querySelector(DOM.inputBtn).addEventListener("click", addItem);
    document.addEventListener('keypress', function(event){
