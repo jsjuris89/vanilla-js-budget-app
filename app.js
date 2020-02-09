@@ -28,6 +28,25 @@ let budgetController = (function() {
      budget: 0,
      percentage: -1
   };
+  // 1. If there is no data in localStorage then create it
+// 2. Get latest data from localstorage
+// 3. in controller module in addItem func update "Data" values in localstorage via addItemToArray func
+// 4. Update localcstorage data when user deletes an item via deleteItemFromArray func
+// -------- Statistics --------
+// 5. Get / save monthData in localStorage
+// 5.1 We update localstorage when adding OR deleting items by using getMonthExpenses func (switch then before returning f.e.return monthData.feb we before that update localstorage)
+// 5.2 When refreshing keep the DOM items which wasnt deleted.
+// 
+
+  if (localStorage.getItem("Data") == null) {
+     localStorage.setItem("Data", JSON.stringify(data));
+  } else {
+     console.log("There already is a key -- DATA -- in localstorage.")
+     // if there is Data in localstorage get it
+     data = JSON.parse(localStorage.getItem("Data"));
+  }
+  // check in chrome browser  what is current values of Data key for testing purposes
+  let test = JSON.parse(localStorage.getItem("Data"));
 
   let monthData = {
      jan: {
@@ -128,6 +147,14 @@ let budgetController = (function() {
      }  
   }
 
+  if (localStorage.getItem("MonthData") == null) {
+     localStorage.setItem("MonthData", JSON.stringify(monthData));
+  } else {
+     console.log("There is already a key -- MONTHDATA -- in localstorage.")
+     monthData = JSON.parse(localStorage.getItem("MonthData"));
+  }
+  let testMonth = JSON.parse(localStorage.getItem("MonthData"));
+
 
   let calculateTotal = function(type) {
       let sum = 0;
@@ -156,6 +183,7 @@ let budgetController = (function() {
             newItem = new Income(ID, desc, val, date);
          }
          data.allItems[type].push(newItem);
+         localStorage.setItem("Data", JSON.stringify(data));
 
          return newItem;
       },
@@ -172,6 +200,7 @@ let budgetController = (function() {
          if (index !== -1) {
             data.allItems[type].splice(index, 1);
          }
+         localStorage.setItem("Data", JSON.stringify(data));
       },
       calculateBudget: function() {
          // Calculate total income & expenses
@@ -224,7 +253,7 @@ let budgetController = (function() {
                   // If it does not have it then reset back that category to 0! Our app works fine (updateChart function) until the very last element then we need to check in original data structure if there is any array item with a key:value as like category: "food" / category: "transportation" etc
                   
                   if (data.allItems.exp.filter(e => e.category === "other").length > 0) {
-                     console.log("Now we have category with name ----> OTHER")
+                     // console.log("Now we have category with name ----> OTHER")
                   } else {
                      monthData.feb.categories.other = otherSum;
                   }
@@ -232,9 +261,7 @@ let budgetController = (function() {
                   data.allItems.exp.forEach(function (element) {
                      if (element.category == "food") {
                         foodSum = foodSum + element.value;
-                        monthData.feb.categories.food = foodSum;
-                        // console.log("food sum is: " + monthData.feb.categories.food)
-                        // console.log(foodSum);
+                        monthData.feb.categories.food = foodSum;  
                      } else if (element.category == "transportation") {
                         transportationSum = transportationSum + element.value;
                         monthData.feb.categories.transportation = transportationSum;
@@ -245,7 +272,10 @@ let budgetController = (function() {
                   })
                   // Sum all 3 categories together for total expenses in a month
                   monthData.feb.totalExpenses = monthData.feb.categories.food + monthData.feb.categories.transportation + monthData.feb.categories.other;
-                  // break;
+
+                  // after all done update localstorage
+                  localStorage.setItem("MonthData", JSON.stringify(monthData));
+                  // let testing = JSON.parse(localStorage.getItem("MonthData"));
                   
                   return monthData.feb
                case "March":
@@ -296,11 +326,14 @@ let budgetController = (function() {
       testData: function() {
          console.log(data);
       },
+      testMonthData: function() {
+         console.log(monthData);
+      },
       getData: function() {
          return data;
       },
-      testMonthData: function() {
-         console.log(monthData);
+      getMonthData: function() {
+         return monthData;
       }
      }
 })();
@@ -339,7 +372,7 @@ let UIController = (function(){
          let category = function() {
             switch (document.querySelector(".selected-2").innerHTML) {
                case "Food":
-                  console.log("Food category was chosen.");
+                  // console.log("Food category was chosen.");
                   return "food";
                case "Transportation":
                   console.log("Transportation category was chosen.")
@@ -358,13 +391,17 @@ let UIController = (function(){
             date: document.querySelector(DOMStrings.itemDate).getAttribute("data-calendar-date")
          };
       },
-      
+      showOldDomItems: function() {
+         let expensesList = document.querySelector(".expenses-list");
+         let saved = localStorage.getItem("expensesList");
+         expensesList.innerHTML = saved;
+
+      },
       addItemToDom: function(obj, type){
          let element;
          let html;
          let newHtml;
-         console.log("object details ----- : " + obj);
-
+         
          if (type === "inc") {
             element = DOMStrings.incomeContainer;
             html = '<div class="item" id="inc-%id%">' +
@@ -391,10 +428,17 @@ let UIController = (function(){
 
          // insert HTML into the DOM
          document.querySelector(element).insertAdjacentHTML('beforeend', newHtml);
+         // Save the HTML to localstorage
+         let expensesList = document.querySelector(".expenses-list");
+         localStorage.setItem("expensesList", expensesList.innerHTML);
       },
       deleteItemFromDom: function(htmlID) {
          let element = document.getElementById(htmlID);
          element.parentElement.removeChild(element);
+
+         // Update localstorage data
+         let expensesList = document.querySelector(".expenses-list");
+         localStorage.setItem("expensesList", expensesList.innerHTML)
       },
 
       clearFields: function() {
@@ -492,6 +536,8 @@ let myCharts = (function(budget){
 let controller = (function(budget, UI, charts) {
 
    let DOM = UI.getDOMStrings();
+   UI.showOldDomItems();
+
 
 
    UI.displayMonth();
@@ -519,6 +565,7 @@ let controller = (function(budget, UI, charts) {
             newItem = budget.addItemToArray(input.type, input.category, input.description, input.value, input.date);
             // Extra filter by month expenses
             budget.getMonthExpenses(input.date, input.type);
+
             // 3.1 Add the item to the UI
             UI.addItemToDom(newItem, input.type);
             // 3.2 Clear the fields
@@ -542,7 +589,7 @@ let controller = (function(budget, UI, charts) {
       let ID;
       // console.log("date is : " + event.target.parentElement.parentElement.getAttribute("data-date"));
       let deleteDate = event.target.parentElement.parentElement.getAttribute("data-date");
-      console.log("delete date is ---->" + deleteDate);
+      // console.log("delete date is ---->" + deleteDate);
       // console.log(event.target.parentElement.parentElement);
       itemID = event.target.parentElement.parentElement.id;
 
