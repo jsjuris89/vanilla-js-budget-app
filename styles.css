@@ -215,7 +215,6 @@ body {
    margin-bottom: 8px;
    color: #f5f6fa;
    position: relative;
-
    order: 0;
 }
 .selected::after {
@@ -236,6 +235,9 @@ body {
    opacity: 1;
    overflow-y: scroll;
 }
+
+
+
 .select-box .options-container.active + .selected::after {
    transform: rotateX(180deg);
    top: -6px;
