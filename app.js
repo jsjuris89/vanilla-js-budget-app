@@ -36,7 +36,6 @@ let budgetController = (function() {
 // 5. Get / save monthData in localStorage
 // 5.1 We update localstorage when adding OR deleting items by using getMonthExpenses func (switch then before returning f.e.return monthData.feb we before that update localstorage)
 // 5.2 When refreshing keep the DOM items which wasnt deleted.
-// 
 
   if (localStorage.getItem("Data") == null) {
      localStorage.setItem("Data", JSON.stringify(data));
@@ -45,8 +44,6 @@ let budgetController = (function() {
      // if there is Data in localstorage get it
      data = JSON.parse(localStorage.getItem("Data"));
   }
-  // check in chrome browser  what is current values of Data key for testing purposes
-  let test = JSON.parse(localStorage.getItem("Data"));
 
   let monthData = {
      jan: {
@@ -153,7 +150,6 @@ let budgetController = (function() {
      console.log("There is already a key -- MONTHDATA -- in localstorage.")
      monthData = JSON.parse(localStorage.getItem("MonthData"));
   }
-  let testMonth = JSON.parse(localStorage.getItem("MonthData"));
 
 
   let calculateTotal = function(type) {
@@ -209,14 +205,6 @@ let budgetController = (function() {
 
 
          data.budget = data.totals.inc - data.totals.exp;
-
-         // Calculate the percentage of income that we spent
-         // -----UNUSED yet-----
-         // if (data.totals.inc > 0) {
-         //    data.percentage = Math.round((data.totals.exp / data.totals.inc) * 100);
-         // } else {
-         //    data.percentage = -1;
-         // }
       },
       getMonthExpenses: function(date, type) {
          let inputDate = new Date(date);
@@ -252,9 +240,16 @@ let budgetController = (function() {
                   // Since in our app getMonthExpenses basically always make at least 1 value in monthData.feb.categories.X = some value (never a 0) we will just check in data.AllItems.exp array has any element with a specific value. F.E. category: "food"
                   // If it does not have it then reset back that category to 0! Our app works fine (updateChart function) until the very last element then we need to check in original data structure if there is any array item with a key:value as like category: "food" / category: "transportation" etc
                   
-                  if (data.allItems.exp.filter(e => e.category === "other").length > 0) {
-                     // console.log("Now we have category with name ----> OTHER")
-                  } else {
+                  // Last item in category: food
+                  if (!data.allItems.exp.filter(e => e.category === "food").length > 0) {
+                     monthData.feb.categories.food = foodSum;
+                  }
+                  // Last item in category: transportation
+                  if (!data.allItems.exp.filter(e => e.category === "transportation").length > 0) {
+                     monthData.feb.categories.transportation = transportationSum;
+                  }
+                  // Last item in category: other
+                  if (!data.allItems.exp.filter(e => e.category === "other").length > 0) {
                      monthData.feb.categories.other = otherSum;
                   }
 
@@ -519,31 +514,23 @@ let myCharts = (function(budget){
       },
       updateChart: function() {
 
-         console.log(budgetController.getData().allItems.exp);
+         // console.log(budgetController.getData().allItems.exp);
          
          console.log("update chart function launched!");
          expensesChart.data.datasets[0].data = [monthData.feb.categories[Object.keys(monthData.feb.categories)[0]], monthData.feb.categories[Object.keys(monthData.feb.categories)[1]], monthData.feb.categories[Object.keys(monthData.feb.categories)[2]]];
          expensesChart.update();
-
-         // Delete whole label date if there are no data (when user deletes a single item from f.e. food category in February)
-
       }
    }
 
 })(budgetController)
 
+
+
+
 // Global App Controller
 let controller = (function(budget, UI, charts) {
 
    let DOM = UI.getDOMStrings();
-   UI.showOldDomItems();
-
-
-
-   UI.displayMonth();
-   myCharts.createChart();
-
-
    let updateBudget = function() {
       // 1. calculate the budget
       budget.calculateBudget();
@@ -552,6 +539,13 @@ let controller = (function(budget, UI, charts) {
       // 3. Displaythe budget in the UI
       UI.displayBudget(budgetNow);
    }
+   // Show as soon page loads
+   UI.displayMonth();
+   updateBudget();
+   UI.showOldDomItems();
+   myCharts.createChart();
+
+   
    
    let addItem = function() {
       let input;
@@ -587,10 +581,8 @@ let controller = (function(budget, UI, charts) {
       let splitID;
       let type;
       let ID;
-      // console.log("date is : " + event.target.parentElement.parentElement.getAttribute("data-date"));
+
       let deleteDate = event.target.parentElement.parentElement.getAttribute("data-date");
-      // console.log("delete date is ---->" + deleteDate);
-      // console.log(event.target.parentElement.parentElement);
       itemID = event.target.parentElement.parentElement.id;
 
       if (itemID) {
@@ -600,13 +592,12 @@ let controller = (function(budget, UI, charts) {
          type = splitID[0];
          // console.log("type is: " + type);
          ID = parseInt(splitID[1]);
-         console.log("ID is: " + ID);
+         // console.log("ID is: " + ID);
       }
 
 
       // 1. delete the item from the data structure
       budget.deleteItemFromArray(type, ID);
-      // 1.1 ---------.
       budget.getMonthExpenses(deleteDate, type);
       myCharts.updateChart();
 
@@ -663,11 +654,7 @@ optionsList2.forEach(o => {
 
 
 
-
-
 // Calendar picker
 let myCalendar = new VanillaCalendar({
    selector: "#myCalendar"
 })
-
-
