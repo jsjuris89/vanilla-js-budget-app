@@ -365,7 +365,7 @@ let UIController = (function(){
             }
          }
          let category = function() {
-            switch (document.querySelector(".selected-2").innerHTML) {
+            switch (document.querySelector(".selected.selected-category").innerHTML) {
                case "Food":
                   // console.log("Food category was chosen.");
                   return "food";
@@ -620,38 +620,37 @@ let controller = (function(budget, UI, charts) {
 
 
 
-// Custom Select Box Code
-// Income / Expense
-const selected = document.querySelector(".selected");
-const optionsContainer = document.querySelector(".options-container");
-const optionsList = document.querySelectorAll(".option");
+// Custom Select Boxes
+// Income or Expense
+const typeSelected = document.querySelector(".selected.selected-type");
+const typeOptionsContainer = document.querySelector(".options-container.options-container-type");
+const typeOptionsList = document.querySelectorAll(".option.option-type");
 
-selected.addEventListener("click", () => {
-   optionsContainer.classList.toggle("active");
-});
 
-optionsList.forEach(o => {
-   o.addEventListener("click", () => {
-      selected.innerHTML = o.querySelector("label").innerHTML;
-      optionsContainer.classList.remove("active");
-   })
+typeSelected.addEventListener("click", () => {
+   typeOptionsContainer.classList.toggle("active");
 })
-// Food / Transportation / Other
-// -----------check later ------------
-const selected2 = document.querySelector(".selected-2");
-const optionsContainer2 = document.querySelector(".options-container-2");
-const optionsList2 = document.querySelectorAll(".options-container-2 .option-2");
-
-selected2.addEventListener("click", () => {
-   optionsContainer2.classList.toggle("active");
-});
-optionsList2.forEach(o => {
+typeOptionsList.forEach(o => {
    o.addEventListener("click", () => {
-      selected2.innerHTML = o.querySelector("label").innerHTML;
-      optionsContainer2.classList.remove("active");
+      typeSelected.innerHTML = o.querySelector("label").innerHTML;
+      typeOptionsContainer.classList.remove("active");
    })
 })
 
+// Food or Transportation or Other
+const categorySelected = document.querySelector(".selected.selected-category");
+const categoryOptionsContainer = document.querySelector(".options-container.options-container-category");
+const categoryOptionsList = document.querySelectorAll(".option.option-category");
+
+categorySelected.addEventListener("click", () => {
+   categoryOptionsContainer.classList.toggle("active");
+})
+categoryOptionsList.forEach(o => {
+   o.addEventListener("click", () => {
+      categorySelected.innerHTML = o.querySelector("label").innerHTML;
+      categoryOptionsContainer.classList.remove("active");
+   })
+})
 
 
 // Calendar picker
