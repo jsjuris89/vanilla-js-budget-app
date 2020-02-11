@@ -210,7 +210,7 @@ body {
     cursor: pointer; }
     .select-box .selected::after {
       content: "";
-      background: url("arrow-down.svg");
+      background: url("/arrow-down.svg");
       background-size: contain;
       background-repeat: no-repeat;
       position: absolute;
@@ -219,5 +219,25 @@ body {
       right: 10px;
       top: 5px;
       transition: all 0.4s; }
+
+header {
+  padding: 20px 10px;
+  background: #2f3640; }
+
+nav ul {
+  list-style: none; }
+  nav ul li {
+    display: inline-block;
+    padding: 0 15px;
+    text-transform: uppercase; }
+    nav ul li img {
+      width: 18px;
+      margin-right: 6px; }
+    nav ul li a {
+      text-decoration: none;
+      color: #d8d4d2;
+      font-size: 18px; }
+      nav ul li a:hover {
+        color: #a7a3a1; }
 
 /*# sourceMappingURL=main.css.map */
