@@ -29,15 +29,31 @@ body {
        text-align: center;
        margin-bottom: 15px;
     }
-    .budget-value {
-       font-size: 40px;
+    .budget-value-container {
        text-align: center;
-       margin-bottom: 25px;
-       letter-spacing: 4px;
+       .budget-value {
+         font-size: 40px;
+         margin-bottom: 25px;
+         letter-spacing: 4px;
+         display: inline-block;
+      }
+      .dollar-svg {
+         width: 45px;
+         height: 45px;
+      }
     }
+    
     .budget-income {
        margin-bottom: 20px;
+       .up-svg {
+         width: 30px;
+         height: 30px;
+      }
     }
+    .budget-expenses .down-svg {
+      width: 30px;
+      height: 30px;
+   }
     .budget-income, .budget-expenses {
        font-size: 22px;
        text-align: center;
@@ -50,7 +66,8 @@ body {
        
     }
     .budget-income-value, .budget-expenses-value {
-       font-size: 18px;
+       font-size: 20px;
+       display: inline-block;
     }
 }
 // Bottom container for (Date picker & buttons)
