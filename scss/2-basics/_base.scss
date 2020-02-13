@@ -1,0 +1,128 @@
+* {
+   margin: 0;
+   padding: 0;
+   box-sizing: border-box;
+}
+body {
+   font-family: "Verdana", sans-serif;
+   position: relative;
+}
+
+// Header part of page
+.top {
+   height: 60vh;
+   background-image: url(/background1.jpg);
+   background-size: cover;
+   background-position: center;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   margin-bottom: 15px;
+}
+.budget {
+   position: relative;
+   max-width: 400px;
+   background: rgba(255, 255, 255, .4);
+   padding: 15px;
+   .budget-title {
+       font-size: 34px;
+       text-align: center;
+       margin-bottom: 15px;
+    }
+    .budget-value-container {
+       text-align: center;
+       .budget-value {
+         font-size: 40px;
+         margin-bottom: 25px;
+         letter-spacing: 4px;
+         display: inline-block;
+      }
+      .dollar-svg {
+         width: 45px;
+         height: 45px;
+      }
+    }
+    
+    .budget-income {
+       margin-bottom: 20px;
+       .up-svg {
+         width: 30px;
+         height: 30px;
+      }
+    }
+    .budget-expenses .down-svg {
+      width: 30px;
+      height: 30px;
+   }
+    .budget-income, .budget-expenses {
+       font-size: 22px;
+       text-align: center;
+       padding: 5px;
+    }
+    .budget-income-text, .budget-expenses-text {
+       text-transform: uppercase;
+       font-weight: 500;
+       margin-bottom: 8px;
+       
+    }
+    .budget-income-value, .budget-expenses-value {
+       font-size: 20px;
+       display: inline-block;
+    }
+}
+// Bottom container for (Date picker & buttons)
+.add {
+   border-bottom: 2px solid #e7e7e7;
+   border-top: 2px solid #e7e7e7;
+   background-color: #f7f7f7;
+   display: flex;
+   justify-content: center;
+   .vanilla-calendar {
+       margin: 0;
+       margin-bottom: 10px;
+    }
+}
+//  Container for select-boxes, inputs, button
+.add-container {
+   width: 600px;
+   height: 160px; 
+   // margin: 0 auto;
+   display: flex;
+   justify-content: space-around;
+   position: relative;
+   margin: 0;
+   // set flex-basis for all elements then justify-content will work
+}
+
+// Bottom for dynamic html
+.container {
+   width: 1000px;
+   margin: 50px auto;
+   // Add max-width
+   display: flex;
+   justify-content: space-around;
+   h2 {
+       text-align: center;
+       margin-bottom: 20px;
+   }
+   & > div {
+       flex: 1;
+   }
+}
+// Inserted html part
+.item {
+   display: flex;
+   justify-content: space-around;
+   padding: 13px;
+   border-bottom: 1px solid #e7e7e7;
+   &:first-child {
+       border-top: 1px solid #e7e7e7;
+   }
+   &:nth-child(even) {
+       background-color: #f7f7f7;
+
+   }
+}
+
+
+ 
