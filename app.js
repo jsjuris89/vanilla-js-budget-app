@@ -1,4 +1,3 @@
-
 // Budget Controller
 let budgetController = (function () {
 
@@ -28,28 +27,12 @@ let budgetController = (function () {
       budget: 0,
       percentage: -1
    };
-   // 1. If there is no data in localStorage then create it
-   // 2. Get latest data from localstorage
-   // 3. in controller module in addItem func update "Data" values in localstorage via addItemToArray func
-   // 4. Update localcstorage data when user deletes an item via deleteItemFromArray func
-   // -------- Statistics --------
-   // 5. Get / save monthData in localStorage
-   // 5.1 We update localstorage when adding OR deleting items by using getMonthExpenses func (switch then before returning f.e.return monthData.feb we before that update localstorage)
-   // 5.2 When refreshing keep the DOM items which wasnt deleted.
-
-   if (localStorage.getItem("Data") == null) {
-      localStorage.setItem("Data", JSON.stringify(data));
-   } else {
-      console.log("There already is a key -- DATA -- in localstorage.")
-      // if there is Data in localstorage get it
-      data = JSON.parse(localStorage.getItem("Data"));
-   }
 
    let monthData = {
       jan: {
          totalExpenses: 0,
          categories: {
-            food: 0,
+            food: 2,
             transportation: 0,
             other: 0
          }
@@ -144,6 +127,15 @@ let budgetController = (function () {
       }
    }
 
+   // Localstorage
+   if (localStorage.getItem("Data") == null) {
+      localStorage.setItem("Data", JSON.stringify(data));
+   } else {
+      console.log("There already is a key -- DATA -- in localstorage.")
+      // if there is Data in localstorage get it
+      data = JSON.parse(localStorage.getItem("Data"));
+   }
+
    if (localStorage.getItem("MonthData") == null) {
       localStorage.setItem("MonthData", JSON.stringify(monthData));
    } else {
@@ -200,624 +192,374 @@ let budgetController = (function () {
       },
       calculateBudget: function () {
          // Calculate total income & expenses
-         calculateTotal('exp');
          calculateTotal('inc');
-
-
+         calculateTotal('exp');
          data.budget = data.totals.inc - data.totals.exp;
       },
-      getMonthExpenses: function (date, type) {
-         let inputDate = new Date(date);
-
-         months = [
-            "January",
-            "February",
-            "March",
-            "April",
-            "May",
-            "June",
-            "July",
-            "August",
-            "September",
-            "October",
-            "November",
-            "December"
-         ];
-
-         let month = months[inputDate.getMonth()];
-
-         if (type == "exp") {
-            switch (month) {
-               case "January":
-                  // 1st we need filter out from data.allItems.exp only items which have specific month in date: .....
-                  let janAllExpenses = data.allItems.exp.filter(function (item) {
-                     let itemDate = new Date(item.date);
-
-                     month = months[itemDate.getMonth()]
-                     if (month == "January") {
-                        console.log(item);
-                        return true;
-                     }
-                  });
-
-                  let janFood = 0;
-                  let janTransport = 0;
-                  let janOther = 0;
-
-                  // Last item in category: food
-                  if (!data.allItems.exp.filter(e => e.category === "food").length > 0) {
-                     monthData.jan.categories.food = janFood;
-                  }
-                  // Last item in category: transportation
-                  if (!data.allItems.exp.filter(e => e.category === "transportation").length > 0) {
-                     monthData.jan.categories.transportation = janTransport;
-                  }
-                  // Last item in category: other
-                  if (!data.allItems.exp.filter(e => e.category === "other").length > 0) {
-                     monthData.jan.categories.other = janOther;
-                  }
-
-                  janAllExpenses.forEach(function (item) {
-                     if (item.category == "food") {
-                        janFood = janFood + item.value;
-                        monthData.jan.categories.food = janFood;
-                     } else if (item.category == "transportation") {
-                        janTransport = janTransport + item.value;
-                        monthData.jan.categories.transportation = janTransport
-                     } else if (item.category == "other") {
-                        janOther = janOther + item.value;
-                        monthData.jan.categories.other = janOther;
-                     }
-                  })
-
-                  // Sum all 3 categories together for total expenses in a month
-                  monthData.jan.totalExpenses = monthData.jan.categories.food + monthData.jan.categories.transportation + monthData.jan.categories.other;
-
-                  // after all done update localstorage
-                  localStorage.setItem("MonthData", JSON.stringify(monthData));
-
-                  return monthData.jan;
-
-               case "February":
-                  // 1st we need filter out from data.allItems.exp only items which have specific month in date: .....
-                  let febAllExpenses = data.allItems.exp.filter(function (item) {
-                     let itemDate = new Date(item.date);
-                     month = months[itemDate.getMonth()]
-
-                     if (month == "February") {
-                        console.log(item);
-                        return true;
-                     }
-                  });
-
-
-                  let febFood = 0;
-                  let febTransport = 0;
-                  let febOther = 0;
-
-                  // Since in our app getMonthExpenses basically always make at least 1 value in monthData.feb.categories.X = some value (never a 0) we will just check in data.AllItems.exp array has any element with a specific value. F.E. category: "food"
-                  // If it does not have it then reset back that category to 0! Our app works fine (updateChart function) until the very last element then we need to check in original data structure if there is any array item with a key:value as like category: "food" / category: "transportation" etc
-
-                  // Last item in category: food
-                  if (!data.allItems.exp.filter(e => e.category === "food").length > 0) {
-                     monthData.feb.categories.food = febFood;
-                  }
-                  // Last item in category: transportation
-                  if (!data.allItems.exp.filter(e => e.category === "transportation").length > 0) {
-                     monthData.feb.categories.transportation = febTransport;
-                  }
-                  // Last item in category: other
-                  if (!data.allItems.exp.filter(e => e.category === "other").length > 0) {
-                     monthData.feb.categories.other = febOther;
-                  }
-
-                  febAllExpenses.forEach(function (item) {
-                     if (item.category == "food") {
-                        febFood = febFood + item.value;
-                        monthData.feb.categories.food = febFood;
-                     } else if (item.category == "transportation") {
-                        febTransport = febTransport + item.value;
-                        monthData.feb.categories.transportation = febTransport;
-                     } else if (item.category == "other") {
-                        febOther = febOther + item.value;
-                        monthData.feb.categories.other = febOther;
-                     }
-                  })
-                  // Sum all 3 categories together for total expenses in a month
-                  monthData.feb.totalExpenses = monthData.feb.categories.food + monthData.feb.categories.transportation + monthData.feb.categories.other;
-
-                  // after all done update localstorage
-                  localStorage.setItem("MonthData", JSON.stringify(monthData));
-                  // let testing = JSON.parse(localStorage.getItem("MonthData"));
-
-
-                  return monthData.feb
-
-               case "March":
-                  // 1st we need filter out from data.allItems.exp only items which have specific month in date: .....
-                  let marAllExpenses = data.allItems.exp.filter(function (item) {
-                     let itemDate = new Date(item.date);
-
-                     month = months[itemDate.getMonth()]
-                     if (month == "March") {
-                        // console.log(item);
-                        return true;
-                     }
-                  });
-
-                  let marFood = 0;
-                  let marTransport = 0;
-                  let marOther = 0;
-
-                  // Last item in category: food
-                  if (!data.allItems.exp.filter(e => e.category === "food").length > 0) {
-                     monthData.mar.categories.food = marFood;
-                  }
-                  // Last item in category: transportation
-                  if (!data.allItems.exp.filter(e => e.category === "transportation").length > 0) {
-                     monthData.mar.categories.transportation = marTransport;
-                  }
-                  // Last item in category: other
-                  if (!data.allItems.exp.filter(e => e.category === "other").length > 0) {
-                     monthData.mar.categories.other = marOther;
-                  }
-
-                  marAllExpenses.forEach(function (item) {
-                     if (item.category == "food") {
-                        marFood = marFood + item.value;
-                        monthData.mar.categories.food = marFood;
-                     } else if (item.category == "transportation") {
-                        marTransport = marTransport + item.value;
-                        monthData.mar.categories.transportation = marTransport
-                     } else if (item.category == "other") {
-                        marOther = marOther + item.value;
-                        monthData.mar.categories.other = marOther;
-                     }
-                  })
-
-                  // Sum all 3 categories together for total expenses in a month
-                  monthData.mar.totalExpenses = monthData.mar.categories.food + monthData.mar.categories.transportation + monthData.mar.categories.other;
-
-                  // after all done update localstorage
-                  localStorage.setItem("MonthData", JSON.stringify(monthData));
-
-                  return monthData.mar;
-               case "April":
-                  let aprAllExpenses = data.allItems.exp.filter(function (item) {
-                     let itemDate = new Date(item.date);
-
-                     month = months[itemDate.getMonth()]
-                     if (month == "April") {
-                        // console.log(item);
-                        return true;
-                     }
-                  });
-
-                  let aprFood = 0;
-                  let aprTransport = 0;
-                  let aprOther = 0;
-
-                  // Last item in category: food
-                  if (!data.allItems.exp.filter(e => e.category === "food").length > 0) {
-                     monthData.apr.categories.food = aprFood;
-                  }
-                  // Last item in category: transportation
-                  if (!data.allItems.exp.filter(e => e.category === "transportation").length > 0) {
-                     monthData.apr.categories.transportation = aprTransport;
-                  }
-                  // Last item in category: other
-                  if (!data.allItems.exp.filter(e => e.category === "other").length > 0) {
-                     monthData.apr.categories.other = aprOther;
-                  }
-
-                  aprAllExpenses.forEach(function (item) {
-                     if (item.category == "food") {
-                        aprFood = aprFood + item.value;
-                        monthData.apr.categories.food = aprFood;
-                     } else if (item.category == "transportation") {
-                        aprTransport = aprTransport + item.value;
-                        monthData.apr.categories.transportation = aprTransport
-                     } else if (item.category == "other") {
-                        aprOther = aprOther + item.value;
-                        monthData.apr.categories.other = aprOther;
-                     }
-                  })
-
-                  // Sum all 3 categories together for total expenses in a month
-                  monthData.apr.totalExpenses = monthData.apr.categories.food + monthData.apr.categories.transportation + monthData.apr.categories.other;
-
-                  // after all done update localstorage
-                  localStorage.setItem("MonthData", JSON.stringify(monthData));
-
-                  return monthData.apr;
-               case "May":
-                  let mayAllExpenses = data.allItems.exp.filter(function (item) {
-                     let itemDate = new Date(item.date);
-
-                     month = months[itemDate.getMonth()]
-                     if (month == "May") {
-                        // console.log(item);
-                        return true;
-                     }
-                  });
-
-                  let mayFood = 0;
-                  let mayTransport = 0;
-                  let mayOther = 0;
-
-                  // Last item in category: food
-                  if (!data.allItems.exp.filter(e => e.category === "food").length > 0) {
-                     monthData.may.categories.food = mayFood;
-                  }
-                  // Last item in category: transportation
-                  if (!data.allItems.exp.filter(e => e.category === "transportation").length > 0) {
-                     monthData.may.categories.transportation = mayTransport;
-                  }
-                  // Last item in category: other
-                  if (!data.allItems.exp.filter(e => e.category === "other").length > 0) {
-                     monthData.may.categories.other = mayOther;
-                  }
-
-                  mayAllExpenses.forEach(function (item) {
-                     if (item.category == "food") {
-                        mayFood = mayFood + item.value;
-                        monthData.may.categories.food = mayFood;
-                     } else if (item.category == "transportation") {
-                        mayTransport = mayTransport + item.value;
-                        monthData.may.categories.transportation = mayTransport
-                     } else if (item.category == "other") {
-                        mayOther = mayOther + item.value;
-                        monthData.may.categories.other = mayOther;
-                     }
-                  })
-
-                  // Sum all 3 categories together for total expenses in a month
-                  monthData.may.totalExpenses = monthData.may.categories.food + monthData.may.categories.transportation + monthData.may.categories.other;
-
-                  // after all done update localstorage
-                  localStorage.setItem("MonthData", JSON.stringify(monthData));
-
-                  return monthData.may;
-               case "June":
-                  // DO NOT WORK SOME BUG
-                  let junAllExpenses = data.allItems.exp.filter(function (item) {
-                     let itemDate = new Date(item.date);
-
-                     month = months[itemDate.getMonth()]
-                     if (month == "June") {
-                        // console.log(item);
-                        return true;
-                     }
-                  });
-
-                  let junFood = 0;
-                  let junTransport = 0;
-                  let junOther = 0;
-
-                  // Last item in category: food
-                  if (!data.allItems.exp.filter(e => e.category === "food").length > 0) {
-                     monthData.jun.categories.food = junFood;
-                  }
-                  // Last item in category: transportation
-                  if (!data.allItems.exp.filter(e => e.category === "transportation").length > 0) {
-                     monthData.jun.categories.transportation = junTransport;
-                  }
-                  // Last item in category: other
-                  if (!data.allItems.exp.filter(e => e.category === "other").length > 0) {
-                     monthData.jun.categories.other = junOther;
-                  }
-
-                  junAllExpenses.forEach(function (item) {
-                     if (item.category == "food") {
-                        junFood = junFood + item.value;
-                        monthData.jun.categories.food = junFood;
-                     } else if (item.category == "transportation") {
-                        junTransport = junTransport + item.value;
-                        monthData.jun.categories.transportation = junTransport
-                     } else if (item.category == "other") {
-                        junOther = junOther + item.value;
-                        monthData.jun.categories.other = junOther;
-                     }
-                  })
-
-                  // Sum all 3 categories together for total expenses in a month
-                  monthData.jun.totalExpenses = monthData.jun.categories.food + monthData.jun.categories.transportation + monthData.jun.categories.other;
-
-                  // after all done update localstorage
-                  localStorage.setItem("MonthData", JSON.stringify(monthData));
-
-                  return monthData.jun;
-               case "July":
-                  let julAllExpenses = data.allItems.exp.filter(function (item) {
-                     let itemDate = new Date(item.date);
-
-                     month = months[itemDate.getMonth()]
-                     if (month == "July") {
-                        // console.log(item);
-                        return true;
-                     }
-                  });
-
-                  let julFood = 0;
-                  let julTransport = 0;
-                  let julOther = 0;
-
-                  // Last item in category: food
-                  if (!data.allItems.exp.filter(e => e.category === "food").length > 0) {
-                     monthData.jul.categories.food = julFood;
-                  }
-                  // Last item in category: transportation
-                  if (!data.allItems.exp.filter(e => e.category === "transportation").length > 0) {
-                     monthData.jul.categories.transportation = julTransport;
-                  }
-                  // Last item in category: other
-                  if (!data.allItems.exp.filter(e => e.category === "other").length > 0) {
-                     monthData.jul.categories.other = julOther;
-                  }
-
-                  julAllExpenses.forEach(function (item) {
-                     if (item.category == "food") {
-                        julFood = julFood + item.value;
-                        monthData.jul.categories.food = julFood;
-                     } else if (item.category == "transportation") {
-                        julTransport = julTransport + item.value;
-                        monthData.jul.categories.transportation = julTransport
-                     } else if (item.category == "other") {
-                        julOther = julOther + item.value;
-                        monthData.jul.categories.other = julOther;
-                     }
-                  })
-
-                  // Sum all 3 categories together for total expenses in a month
-                  monthData.jul.totalExpenses = monthData.jul.categories.food + monthData.jul.categories.transportation + monthData.jul.categories.other;
-
-                  // after all done update localstorage
-                  localStorage.setItem("MonthData", JSON.stringify(monthData));
-
-                  return monthData.jul;
-               case "August":
-                  let augAllExpenses = data.allItems.exp.filter(function (item) {
-                     let itemDate = new Date(item.date);
-
-                     month = months[itemDate.getMonth()]
-                     if (month == "August") {
-                        // console.log(item);
-                        return true;
-                     }
-                  });
-
-                  let augFood = 0;
-                  let augTransport = 0;
-                  let augOther = 0;
-
-                  // Last item in category: food
-                  if (!data.allItems.exp.filter(e => e.category === "food").length > 0) {
-                     monthData.aug.categories.food = augFood;
-                  }
-                  // Last item in category: transportation
-                  if (!data.allItems.exp.filter(e => e.category === "transportation").length > 0) {
-                     monthData.aug.categories.transportation = augTransport;
-                  }
-                  // Last item in category: other
-                  if (!data.allItems.exp.filter(e => e.category === "other").length > 0) {
-                     monthData.aug.categories.other = augOther;
-                  }
-
-                  augAllExpenses.forEach(function (item) {
-                     if (item.category == "food") {
-                        augFood = augFood + item.value;
-                        monthData.aug.categories.food = augFood;
-                     } else if (item.category == "transportation") {
-                        augTransport = augTransport + item.value;
-                        monthData.aug.categories.transportation = augTransport
-                     } else if (item.category == "other") {
-                        augOther = augOther + item.value;
-                        monthData.aug.categories.other = augOther;
-                     }
-                  })
-
-                  // Sum all 3 categories together for total expenses in a month
-                  monthData.aug.totalExpenses = monthData.aug.categories.food + monthData.aug.categories.transportation + monthData.aug.categories.other;
-
-                  // after all done update localstorage
-                  localStorage.setItem("MonthData", JSON.stringify(monthData));
-
-                  return monthData.aug;
-               case "September":
-                  let sepAllExpenses = data.allItems.exp.filter(function (item) {
-                     let itemDate = new Date(item.date);
-
-                     month = months[itemDate.getMonth()]
-                     if (month == "September") {
-                        // console.log(item);
-                        return true;
-                     }
-                  });
-
-                  let sepFood = 0;
-                  let sepTransport = 0;
-                  let sepOther = 0;
-
-                  // Last item in category: food
-                  if (!data.allItems.exp.filter(e => e.category === "food").length > 0) {
-                     monthData.sep.categories.food = sepFood;
-                  }
-                  // Last item in category: transportation
-                  if (!data.allItems.exp.filter(e => e.category === "transportation").length > 0) {
-                     monthData.sep.categories.transportation = sepTransport;
-                  }
-                  // Last item in category: other
-                  if (!data.allItems.exp.filter(e => e.category === "other").length > 0) {
-                     monthData.sep.categories.other = sepOther;
-                  }
-
-                  sepAllExpenses.forEach(function (item) {
-                     if (item.category == "food") {
-                        sepFood = sepFood + item.value;
-                        monthData.sep.categories.food = sepFood;
-                     } else if (item.category == "transportation") {
-                        sepTransport = sepTransport + item.value;
-                        monthData.sep.categories.transportation = sepTransport
-                     } else if (item.category == "other") {
-                        sepOther = sepOther + item.value;
-                        monthData.sep.categories.other = sepOther;
-                     }
-                  })
-
-                  // Sum all 3 categories together for total expenses in a month
-                  monthData.sep.totalExpenses = monthData.sep.categories.food + monthData.sep.categories.transportation + monthData.sep.categories.other;
-
-                  // after all done update localstorage
-                  localStorage.setItem("MonthData", JSON.stringify(monthData));
-
-                  return monthData.sep;
-               case "October":
-                  let octAllExpenses = data.allItems.exp.filter(function (item) {
-                     let itemDate = new Date(item.date);
-
-                     month = months[itemDate.getMonth()]
-                     if (month == "October") {
-                        // console.log(item);
-                        return true;
-                     }
-                  });
-
-                  let octFood = 0;
-                  let octTransport = 0;
-                  let octOther = 0;
-
-                  // Last item in category: food
-                  if (!data.allItems.exp.filter(e => e.category === "food").length > 0) {
-                     monthData.oct.categories.food = octFood;
-                  }
-                  // Last item in category: transportation
-                  if (!data.allItems.exp.filter(e => e.category === "transportation").length > 0) {
-                     monthData.oct.categories.transportation = octTransport;
-                  }
-                  // Last item in category: other
-                  if (!data.allItems.exp.filter(e => e.category === "other").length > 0) {
-                     monthData.oct.categories.other = octOther;
-                  }
-
-                  octAllExpenses.forEach(function (item) {
-                     if (item.category == "food") {
-                        octFood = octFood + item.value;
-                        monthData.oct.categories.food = octFood;
-                     } else if (item.category == "transportation") {
-                        octTransport = octTransport + item.value;
-                        monthData.oct.categories.transportation = octTransport
-                     } else if (item.category == "other") {
-                        octOther = octOther + item.value;
-                        monthData.oct.categories.other = octOther;
-                     }
-                  })
-
-                  // Sum all 3 categories together for total expenses in a month
-                  monthData.oct.totalExpenses = monthData.oct.categories.food + monthData.oct.categories.transportation + monthData.oct.categories.other;
-
-                  // after all done update localstorage
-                  localStorage.setItem("MonthData", JSON.stringify(monthData));
-
-                  return monthData.oct;
-               case "November":
-                  let novAllExpenses = data.allItems.exp.filter(function (item) {
-                     let itemDate = new Date(item.date);
-
-                     month = months[itemDate.getMonth()]
-                     if (month == "November") {
-                        // console.log(item);
-                        return true;
-                     }
-                  });
-
-                  let novFood = 0;
-                  let novTransport = 0;
-                  let novOther = 0;
-
-                  // Last item in category: food
-                  if (!data.allItems.exp.filter(e => e.category === "food").length > 0) {
-                     monthData.nov.categories.food = novFood;
-                  }
-                  // Last item in category: transportation
-                  if (!data.allItems.exp.filter(e => e.category === "transportation").length > 0) {
-                     monthData.nov.categories.transportation = novTransport;
-                  }
-                  // Last item in category: other
-                  if (!data.allItems.exp.filter(e => e.category === "other").length > 0) {
-                     monthData.nov.categories.other = novOther;
-                  }
-
-                  novAllExpenses.forEach(function (item) {
-                     if (item.category == "food") {
-                        novFood = novFood + item.value;
-                        monthData.nov.categories.food = novFood;
-                     } else if (item.category == "transportation") {
-                        novTransport = novTransport + item.value;
-                        monthData.nov.categories.transportation = novTransport
-                     } else if (item.category == "other") {
-                        novOther = novOther + item.value;
-                        monthData.nov.categories.other = novOther;
-                     }
-                  })
-
-                  // Sum all 3 categories together for total expenses in a month
-                  monthData.nov.totalExpenses = monthData.nov.categories.food + monthData.nov.categories.transportation + monthData.nov.categories.other;
-
-                  // after all done update localstorage
-                  localStorage.setItem("MonthData", JSON.stringify(monthData));
-
-                  return monthData.nov;
-               case "December":
-                  let decAllExpenses = data.allItems.exp.filter(function (item) {
-                     let itemDate = new Date(item.date);
-
-                     month = months[itemDate.getMonth()]
-                     if (month == "December") {
-                        // console.log(item);
-                        return true;
-                     }
-                  });
-
-                  let decFood = 0;
-                  let decTransport = 0;
-                  let decOther = 0;
-
-                  // Last item in category: food
-                  if (!data.allItems.exp.filter(e => e.category === "food").length > 0) {
-                     monthData.dec.categories.food = decFood;
-                  }
-                  // Last item in category: transportation
-                  if (!data.allItems.exp.filter(e => e.category === "transportation").length > 0) {
-                     monthData.dec.categories.transportation = decTransport;
-                  }
-                  // Last item in category: other
-                  if (!data.allItems.exp.filter(e => e.category === "other").length > 0) {
-                     monthData.dec.categories.other = decOther;
-                  }
-
-                  decAllExpenses.forEach(function (item) {
-                     if (item.category == "food") {
-                        decFood = decFood + item.value;
-                        monthData.dec.categories.food = decFood;
-                     } else if (item.category == "transportation") {
-                        decTransport = decTransport + item.value;
-                        monthData.dec.categories.transportation = decTransport
-                     } else if (item.category == "other") {
-                        decOther = decOther + item.value;
-                        monthData.dec.categories.other = decOther;
-                     }
-                  })
-
-                  // Sum all 3 categories together for total expenses in a month
-                  monthData.dec.totalExpenses = monthData.dec.categories.food + monthData.dec.categories.transportation + monthData.dec.categories.other;
-
-                  // after all done update localstorage
-                  localStorage.setItem("MonthData", JSON.stringify(monthData));
-
-                  return monthData.dec;
+      updateAllMonths: function () {
+         let allExp = data.allItems.exp;
+         let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+         function updateJanExp() {
+            let januaryExp = allExp.filter(function (item) {
+               let itemDate = new Date(item.date);
+               let month = months[itemDate.getMonth()];
+
+               if (month == "January") {
+                  return true
+               }
+            })
+
+            let totalFood = 0;
+            let totalTransport = 0;
+            let totalOther = 0;
+
+            // 3 if's for delete very last item from monthData obj
+            if (!allExp.filter(e => e.category === "food").length > 0) {
+               monthData.jan.categories.food = totalFood;
             }
+
+            if (!allExp.filter(e => e.category === "transportation").length > 0) {
+               monthData.jan.categories.transportation = totalTransport;
+            }
+
+            if (!allExp.filter(e => e.category === "other").length > 0) {
+               monthData.jan.categories.other = totalOther;
+            }
+
+            januaryExp.forEach(function (item) {
+               if (item.category == "food") {
+                  totalFood += item.value;
+                  monthData.jan.categories.food = totalFood;
+               }
+
+               if (item.category == "transportation") {
+                  totalTransport += item.value;
+                  monthData.jan.categories.transportation = totalTransport
+               }
+
+               if (item.category == "other") {
+                  totalOther += item.value;
+                  monthData.jan.categories.other = totalOther;
+               }
+            })
+            // Get total expenses by summing all categories
+            monthData.jan.totalExpenses = monthData.jan.categories.food + monthData.jan.categories.transportation + monthData.jan.categories.other;
+
+            // Update localstorage
+            localStorage.setItem("MonthData", JSON.stringify(monthData))
          }
+         updateJanExp();
+
+         function updateFebExp() {
+            let februaryExp = allExp.filter(function (item) {
+               let itemDate = new Date(item.date);
+               let month = months[itemDate.getMonth()];
+
+               if (month == "February") {
+                  return true
+               }
+            })
+
+            let totalFood = 0;
+            let totalTransport = 0;
+            let totalOther = 0;
+
+            // 3 if's for delete very last item from monthData obj
+            if (!allExp.filter(e => e.category === "food").length > 0) {
+               monthData.feb.categories.food = totalFood;
+            }
+
+            if (!allExp.filter(e => e.category === "transportation").length > 0) {
+               monthData.feb.categories.transportation = totalTransport;
+            }
+
+            if (!allExp.filter(e => e.category === "other").length > 0) {
+               monthData.feb.categories.other = totalOther;
+            }
+
+            februaryExp.forEach(function (item) {
+               if (item.category == "food") {
+                  totalFood += item.value;
+                  monthData.feb.categories.food = totalFood;
+               }
+
+               if (item.category == "transportation") {
+                  totalTransport += item.value;
+                  monthData.feb.categories.transportation = totalTransport
+               }
+
+               if (item.category == "other") {
+                  totalOther += item.value;
+                  monthData.feb.categories.other = totalOther;
+               }
+            })
+            // Get total expenses by summing all categories
+            monthData.feb.totalExpenses = monthData.feb.categories.food + monthData.feb.categories.transportation + monthData.feb.categories.other;
+
+            // Update localstorage
+            localStorage.setItem("MonthData", JSON.stringify(monthData))
+         }
+         updateFebExp();
+
+         function updateMarExp() {
+            let marchExp = allExp.filter(function (item) {
+               let itemDate = new Date(item.date);
+               let month = months[itemDate.getMonth()];
+
+               if (month == "March") {
+                  return true
+               }
+            })
+
+            let totalFood = 0;
+            let totalTransport = 0;
+            let totalOther = 0;
+
+            // 3 if's for delete very last item from monthData obj
+            if (!allExp.filter(e => e.category === "food").length > 0) {
+               monthData.mar.categories.food = totalFood;
+            }
+
+            if (!allExp.filter(e => e.category === "transportation").length > 0) {
+               monthData.mar.categories.transportation = totalTransport;
+            }
+
+            if (!allExp.filter(e => e.category === "other").length > 0) {
+               monthData.mar.categories.other = totalOther;
+            }
+
+            marchExp.forEach(function (item) {
+               if (item.category == "food") {
+                  totalFood += item.value;
+                  monthData.mar.categories.food = totalFood;
+               }
+
+               if (item.category == "transportation") {
+                  totalTransport += item.value;
+                  monthData.mar.categories.transportation = totalTransport
+               }
+
+               if (item.category == "other") {
+                  totalOther += item.value;
+                  monthData.mar.categories.other = totalOther;
+               }
+            })
+            // Get total expenses by summing all categories
+            monthData.mar.totalExpenses = monthData.mar.categories.food + monthData.mar.categories.transportation + monthData.mar.categories.other;
+
+            // Update localstorage
+            localStorage.setItem("MonthData", JSON.stringify(monthData))
+         }
+         updateMarExp();
+
+         function updateAprExp() {
+            let aprilExp = allExp.filter(function (item) {
+               let itemDate = new Date(item.date);
+               let month = months[itemDate.getMonth()];
+
+               if (month == "April") {
+                  return true
+               }
+            })
+
+            let totalFood = 0;
+            let totalTransport = 0;
+            let totalOther = 0;
+
+            // 3 if's for delete very last item from monthData obj
+            if (!allExp.filter(e => e.category === "food").length > 0) {
+               monthData.apr.categories.food = totalFood;
+            }
+
+            if (!allExp.filter(e => e.category === "transportation").length > 0) {
+               monthData.apr.categories.transportation = totalTransport;
+            }
+
+            if (!allExp.filter(e => e.category === "other").length > 0) {
+               monthData.apr.categories.other = totalOther;
+            }
+
+            aprilExp.forEach(function (item) {
+               if (item.category == "food") {
+                  totalFood += item.value;
+                  monthData.apr.categories.food = totalFood;
+               }
+
+               if (item.category == "transportation") {
+                  totalTransport += item.value;
+                  monthData.apr.categories.transportation = totalTransport
+               }
+
+               if (item.category == "other") {
+                  totalOther += item.value;
+                  monthData.apr.categories.other = totalOther;
+               }
+            })
+            // Get total expenses by summing all categories
+            monthData.apr.totalExpenses = monthData.apr.categories.food + monthData.apr.categories.transportation + monthData.apr.categories.other;
+
+            // Update localstorage
+            localStorage.setItem("MonthData", JSON.stringify(monthData))
+         }
+         updateAprExp();
+
+         function updateMayExp() {
+            let mayExp = allExp.filter(function (item) {
+               let itemDate = new Date(item.date);
+               let month = months[itemDate.getMonth()];
+
+               if (month == "May") {
+                  return true
+               }
+            })
+
+            let totalFood = 0;
+            let totalTransport = 0;
+            let totalOther = 0;
+
+            // 3 if's for delete very last item from monthData obj
+            if (!allExp.filter(e => e.category === "food").length > 0) {
+               monthData.may.categories.food = totalFood;
+            }
+
+            if (!allExp.filter(e => e.category === "transportation").length > 0) {
+               monthData.may.categories.transportation = totalTransport;
+            }
+
+            if (!allExp.filter(e => e.category === "other").length > 0) {
+               monthData.may.categories.other = totalOther;
+            }
+
+            mayExp.forEach(function (item) {
+               if (item.category == "food") {
+                  totalFood += item.value;
+                  monthData.may.categories.food = totalFood;
+               }
+
+               if (item.category == "transportation") {
+                  totalTransport += item.value;
+                  monthData.may.categories.transportation = totalTransport
+               }
+
+               if (item.category == "other") {
+                  totalOther += item.value;
+                  monthData.may.categories.other = totalOther;
+               }
+            })
+            // Get total expenses by summing all categories
+            monthData.may.totalExpenses = monthData.may.categories.food + monthData.may.categories.transportation + monthData.may.categories.other;
+
+            // Update localstorage
+            localStorage.setItem("MonthData", JSON.stringify(monthData))
+         }
+         updateMayExp();
+
+         function updateJunExp() {
+            let juneExp = allExp.filter(function (item) {
+               let itemDate = new Date(item.date);
+               let month = months[itemDate.getMonth()];
+
+               if (month == "June") {
+                  return true
+               }
+            })
+
+            let totalFood = 0;
+            let totalTransport = 0;
+            let totalOther = 0;
+
+            // 3 if's for delete very last item from monthData obj
+            if (!allExp.filter(e => e.category === "food").length > 0) {
+               monthData.jun.categories.food = totalFood;
+            }
+
+            if (!allExp.filter(e => e.category === "transportation").length > 0) {
+               monthData.jun.categories.transportation = totalTransport;
+            }
+
+            if (!allExp.filter(e => e.category === "other").length > 0) {
+               monthData.jun.categories.other = totalOther;
+            }
+
+            juneExp.forEach(function (item) {
+               if (item.category == "food") {
+                  totalFood += item.value;
+                  monthData.jun.categories.food = totalFood;
+               }
+
+               if (item.category == "transportation") {
+                  totalTransport += item.value;
+                  monthData.jun.categories.transportation = totalTransport
+               }
+
+               if (item.category == "other") {
+                  totalOther += item.value;
+                  monthData.jun.categories.other = totalOther;
+               }
+            })
+            // Get total expenses by summing all categories
+            monthData.jun.totalExpenses = monthData.jun.categories.food + monthData.jun.categories.transportation + monthData.jun.categories.other;
+
+            // Update localstorage
+            localStorage.setItem("MonthData", JSON.stringify(monthData))
+         }
+         updateJunExp();
+
+         function updateJulExp() {
+            let julyExp = allExp.filter(function (item) {
+               let itemDate = new Date(item.date);
+               let month = months[itemDate.getMonth()];
+
+               if (month == "July") {
+                  return true
+               }
+            })
+
+            let totalFood = 0;
+            let totalTransport = 0;
+            let totalOther = 0;
+
+            // 3 if's for delete very last item from monthData obj
+            if (!allExp.filter(e => e.category === "food").length > 0) {
+               monthData.jul.categories.food = totalFood;
+            }
+
+            if (!allExp.filter(e => e.category === "transportation").length > 0) {
+               monthData.jul.categories.transportation = totalTransport;
+            }
+
+            if (!allExp.filter(e => e.category === "other").length > 0) {
+               monthData.jul.categories.other = totalOther;
+            }
+
+            julyExp.forEach(function (item) {
+               if (item.category == "food") {
+                  totalFood += item.value;
+                  monthData.jul.categories.food = totalFood;
+               }
+
+               if (item.category == "transportation") {
+                  totalTransport += item.value;
+                  monthData.jul.categories.transportation = totalTransport
+               }
+
+               if (item.category == "other") {
+                  totalOther += item.value;
+                  monthData.jul.categories.other = totalOther;
+               }
+            })
+            // Get total expenses by summing all categories
+            monthData.jul.totalExpenses = monthData.jul.categories.food + monthData.jul.categories.transportation + monthData.jul.categories.other;
+
+            // Update localstorage
+            localStorage.setItem("MonthData", JSON.stringify(monthData))
+         }
+         updateJulExp();
+
+         // If need later we can add rest months Aug, Sep, Oct etc
       },
+
       getMonthData: function () {
          return monthData;
       },
@@ -872,20 +614,18 @@ let UIController = (function () {
             if (document.querySelector(".selected").innerHTML ==
                "Income") {
                return "inc"
-            } else if (document.querySelector(".selected").innerHTML == "Expense") {
+            }
+            if (document.querySelector(".selected").innerHTML == "Expense") {
                return "exp";
             }
          }
          let category = function () {
             switch (document.querySelector(".selected.selected-category").innerHTML) {
                case "Food":
-                  // console.log("Food category was chosen.");
                   return "food";
                case "Transportation":
-                  console.log("Transportation category was chosen.")
                   return "transportation";
                case "Other":
-                  console.log("Other category was chosen.")
                   return "other";
             }
 
@@ -967,18 +707,7 @@ let UIController = (function () {
 
          now = new Date();
          months = [
-            "January",
-            "February",
-            "March",
-            "April",
-            "May",
-            "June",
-            "July",
-            "August",
-            "September",
-            "October",
-            "November",
-            "December"
+            "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"
          ];
          month = now.getMonth();
          year = now.getFullYear();
@@ -989,53 +718,7 @@ let UIController = (function () {
          return DOMStrings;
       }
    };
-
 })();
-
-
-
-// Chart MODULE
-let myCharts = (function (budget) {
-
-
-   let monthData = budget.getMonthData();
-   // console.log(monthData.feb);
-   // console.log(monthData.feb.categories[Object.keys(monthData.feb.categories)[0]])
-   // console.log("yuuuuuuuuuuuuuuuuuuuu: " + monthData.feb.categories[Object.keys(monthData.feb.categories)[0]])
-
-
-   return {
-      createChart: function () {
-         let ctx = document.getElementById('myChart').getContext('2d');
-         let newChart = new Chart(ctx, {
-            type: "pie",
-
-            data: {
-               labels: [Object.keys(monthData.feb.categories)[0], Object.keys(monthData.feb.categories)[1], Object.keys(monthData.feb.categories)[2]],
-               // labels: ["food", "transportation", "other"],
-               datasets: [{
-                  label: "My expenses by category",
-                  backgroundColor: ['rgb(30, 136, 15)', 'rgb(49, 98, 190)', 'rgb(158, 37, 148)'],
-                  borderColor: 'rgb(255, 255, 255)',
-                  // data: [monthData.feb.categories.food, monthData.feb.categories.transportation, monthData.feb.categories.other,]
-                  data: [monthData.feb.categories[Object.keys(monthData.feb.categories)[0]], monthData.feb.categories[Object.keys(monthData.feb.categories)[1]], monthData.feb.categories[Object.keys(monthData.feb.categories)[2]]]
-               }]
-            }
-         });
-         return expensesChart = newChart;
-      },
-      updateChart: function () {
-
-         // console.log(budgetController.getData().allItems.exp);
-
-         console.log("update chart function launched!");
-         expensesChart.data.datasets[0].data = [monthData.feb.categories[Object.keys(monthData.feb.categories)[0]], monthData.feb.categories[Object.keys(monthData.feb.categories)[1]], monthData.feb.categories[Object.keys(monthData.feb.categories)[2]]];
-         expensesChart.update();
-      }
-   }
-
-})(budgetController)
-
 
 
 
@@ -1051,12 +734,10 @@ let controller = (function (budget, UI, charts) {
       // 3. Displaythe budget in the UI
       UI.displayBudget(budgetNow);
    }
-   // Show as soon page loads
+   // Show as soon as page loads
    UI.displayMonth();
    updateBudget();
    UI.showOldDomItems();
-   myCharts.createChart();
-
 
 
    let addItem = function () {
@@ -1067,22 +748,19 @@ let controller = (function (budget, UI, charts) {
 
       // Validate data inputed by user
       if (input.description !== "" && !isNaN(input.value) && input.value > 0) {
-         // 2. Add the item to the budget controller
+         // 2. Add the item to the data object
          newItem = budget.addItemToArray(input.type, input.category, input.description, input.value, input.date);
-         // Extra filter by month expenses
-         budget.getMonthExpenses(input.date, input.type);
+         // 3. Add the item to the monthData object
+         budget.updateAllMonths();
 
-         // 3.1 Add the item to the UI
+         // 4. Add the item to the DOM
          UI.addItemToDom(newItem, input.type);
-         // 3.2 Clear the fields
+         // 5. Clear the fields in DOM
          UI.clearFields();
 
-         // ------------
-         myCharts.updateChart();
-         // 4. Calculate and update budget
+         // 6. Update budget in DOM
          updateBudget();
 
-         // myCharts.updateChart();
       } else {
          console.log("Validation failed!");
       }
@@ -1094,30 +772,23 @@ let controller = (function (budget, UI, charts) {
       let type;
       let ID;
 
-      let deleteDate = event.target.parentElement.parentElement.getAttribute("data-date");
       itemID = event.target.parentElement.parentElement.id;
 
       if (itemID) {
-         // use split - JS converts string to an Object and will return and array
          splitID = itemID.split("-");
-         // console.log("splitID is: " + splitID);
          type = splitID[0];
-         // console.log("type is: " + type);
          ID = parseInt(splitID[1]);
          // console.log("ID is: " + ID);
       }
 
 
-      // 1. delete the item from the data structure
+      // 1. delete the item from the data object
       budget.deleteItemFromArray(type, ID);
-      budget.getMonthExpenses(deleteDate, type);
-      myCharts.updateChart();
-
-
-
-      // 2. delete the item from the UI
+      // 2. update monthData object
+      budget.updateAllMonths();
+      // 3. delete the item from DOM
       UI.deleteItemFromDom(itemID);
-      // 3. Update and show the new budget
+      // 4. Update and show the new budget
       updateBudget();
    };
    document.querySelector(DOM.inputBtn).addEventListener("click", addItem);
@@ -1127,7 +798,7 @@ let controller = (function (budget, UI, charts) {
       }
    });
    document.querySelector(DOM.listsContainer).addEventListener("click", deleteItem);
-})(budgetController, UIController, myCharts)
+})(budgetController, UIController)
 
 
 
