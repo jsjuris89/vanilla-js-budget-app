@@ -9,7 +9,7 @@ body {
 
 .top {
   height: 60vh;
-  background-image: url(/background1.jpg);
+  background-image: url("../img/background1.jpg");
   background-size: cover;
   background-position: center;
   display: flex;
@@ -222,7 +222,7 @@ body {
     cursor: pointer; }
     .select-box .selected::after {
       content: "";
-      background: url("/arrow-down.svg");
+      background: url("../img/icons/arrow-down.svg");
       background-size: contain;
       background-repeat: no-repeat;
       position: absolute;

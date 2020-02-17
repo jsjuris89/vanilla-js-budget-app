@@ -7,15 +7,15 @@ const rename = require('gulp-rename');
 
 // Compile scss into css
 gulp.task('css', function(){
-    return gulp.src('./scss/**/*.scss')
+    return gulp.src('./src/scss/**/*.scss')
     .pipe(sourcemaps.init())
     .pipe(sass())
     .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest('./dist/css'))
+    .pipe(gulp.dest('./build/css'))
  });
 
  gulp.task('js', function() {
-     return gulp.src('app.js')
+     return gulp.src('./src/js/app.js')
      .pipe(sourcemaps.init())
      .pipe(babel({
          presets: ['@babel/preset-env']
@@ -23,11 +23,15 @@ gulp.task('css', function(){
     //  .pipe(uglify())
     //  .pipe(rename({ suffix: '.min' }))
      .pipe(sourcemaps.write('.'))
-     .pipe(gulp.dest('dist'))
+     .pipe(gulp.dest('build/js'))
+ })
+
+ gulp.task('copy', async function() {
+     gulp.src('./src/img/**').pipe(gulp.dest('./build/img'));
  })
 
 // Watch task
 gulp.task('watch', function(){
-    gulp.watch('./scss/**/*.scss', gulp.series('css'));
+    gulp.watch('./src/scss/**/*.scss', gulp.series('css'));
     gulp.watch('./*.js', gulp.series('js'));
 });
