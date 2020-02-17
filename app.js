@@ -260,6 +260,7 @@ let budgetController = (function () {
                   return true
                }
             })
+            console.log(februaryExp)
 
             let totalFood = 0;
             let totalTransport = 0;
@@ -608,6 +609,44 @@ let UIController = (function () {
       itemDate: ".vanilla-calendar-date--selected"
    }
 
+   // Custom Select Box #1
+   const typeSelected = document.querySelector(".selected.selected-type");
+   const typeOptionsContainer = document.querySelector(".options-container.options-container-type");
+   const typeOptionsList = document.querySelectorAll(".option.option-type");
+
+
+   typeSelected.addEventListener("click", () => {
+      typeOptionsContainer.classList.toggle("active");
+   })
+   typeOptionsList.forEach(o => {
+      o.addEventListener("click", () => {
+         typeSelected.innerHTML = o.querySelector("label").innerHTML;
+         typeOptionsContainer.classList.remove("active");
+      })
+   })
+
+   // Custom Select Box #2
+   const categorySelected = document.querySelector(".selected.selected-category");
+   const categoryOptionsContainer = document.querySelector(".options-container.options-container-category");
+   const categoryOptionsList = document.querySelectorAll(".option.option-category");
+
+   categorySelected.addEventListener("click", () => {
+      categoryOptionsContainer.classList.toggle("active");
+   })
+   categoryOptionsList.forEach(o => {
+      o.addEventListener("click", () => {
+         categorySelected.innerHTML = o.querySelector("label").innerHTML;
+         categoryOptionsContainer.classList.remove("active");
+      })
+   })
+
+   // Calendar picker
+   let myCalendar = new VanillaCalendar({
+      selector: "#myCalendar"
+   })
+
+   
+
    return {
       getInput: function () {
          let type = function () {
@@ -643,6 +682,46 @@ let UIController = (function () {
          let saved = localStorage.getItem("expensesList");
          expensesList.innerHTML = saved;
 
+      },
+      ModalWindow: {
+         init() {
+            document.body.addEventListener("click", e => {
+               console.log(e.target);
+               if (e.target.classList.contains("modal-close")) {
+                  this.closeModal(e.target)
+               }
+            })
+         },
+      
+         getHtmlTemplate(modalOptions) {
+            return `
+               <div class="modal-overlay">
+                  <div class="modal-window">
+                     <div class="modal-titlebar">
+                        <span class="modal-title">${modalOptions.title}</span>
+                        <button class="modal-close material-icons">close</button>
+                     </div>
+                     <div class="modal-content">
+                        ${modalOptions.content}
+                     </div>
+                  </div>
+               </div>
+            `;
+         },
+         openModal(modalOptions = {}) {
+            modalOptions = Object.assign({
+               title: "Modal Title",
+               content: "Modal Content"
+            }, modalOptions);
+      
+            const modalTemplate = this.getHtmlTemplate(modalOptions);
+            document.body.insertAdjacentHTML("beforeend", modalTemplate);
+         },
+         closeModal(closeButton) {
+            const modalOverlay = closeButton.parentElement.parentElement.parentElement;
+            modalOverlay.parentElement.removeChild(modalOverlay);
+            // document.body.removeChild(modalOverlay);
+         }
       },
       addItemToDom: function (obj, type) {
          let element;
@@ -739,6 +818,18 @@ let controller = (function (budget, UI, charts) {
    updateBudget();
    UI.showOldDomItems();
 
+   // calendar date selected validation for if statement
+   let datePicked = false;
+   function dateClickCheck() {
+      datePicked = true;
+   }
+   let dates = document.getElementsByClassName("vanilla-calendar-date");
+   Array.from(dates).forEach(function (item) {
+      item.addEventListener("click", dateClickCheck);
+   })
+
+  
+
 
    let addItem = function () {
       let input;
@@ -746,8 +837,15 @@ let controller = (function (budget, UI, charts) {
       // 1. Get the input data from user
       input = UI.getInput();
 
+      
       // Validate data inputed by user
-      if (input.description !== "" && !isNaN(input.value) && input.value > 0) {
+      if (input.description !== "" && !isNaN(input.value) && input.value > 0 && datePicked == true) {
+
+         // Success message to user
+         UI.ModalWindow.openModal({
+            title: "Success",
+            content: "Entry added!"
+         })
          // 2. Add the item to the data object
          newItem = budget.addItemToArray(input.type, input.category, input.description, input.value, input.date);
          // 3. Add the item to the monthData object
@@ -763,7 +861,12 @@ let controller = (function (budget, UI, charts) {
 
       } else {
          console.log("Validation failed!");
-      }
+            // UI.ModalWindow.openModal({
+            //    title: "Error",
+            //    content: "Some data still missing.."
+            // });
+         }
+      
    }
 
    let deleteItem = function (event) {
@@ -781,7 +884,6 @@ let controller = (function (budget, UI, charts) {
          // console.log("ID is: " + ID);
       }
 
-
       // 1. delete the item from the data object
       budget.deleteItemFromArray(type, ID);
       // 2. update monthData object
@@ -798,45 +900,6 @@ let controller = (function (budget, UI, charts) {
       }
    });
    document.querySelector(DOM.listsContainer).addEventListener("click", deleteItem);
-})(budgetController, UIController)
-
-
-
-
-// Custom Select Boxes
-// Income or Expense
-const typeSelected = document.querySelector(".selected.selected-type");
-const typeOptionsContainer = document.querySelector(".options-container.options-container-type");
-const typeOptionsList = document.querySelectorAll(".option.option-type");
-
-
-typeSelected.addEventListener("click", () => {
-   typeOptionsContainer.classList.toggle("active");
-})
-typeOptionsList.forEach(o => {
-   o.addEventListener("click", () => {
-      typeSelected.innerHTML = o.querySelector("label").innerHTML;
-      typeOptionsContainer.classList.remove("active");
-   })
-})
-
-// Food or Transportation or Other
-const categorySelected = document.querySelector(".selected.selected-category");
-const categoryOptionsContainer = document.querySelector(".options-container.options-container-category");
-const categoryOptionsList = document.querySelectorAll(".option.option-category");
-
-categorySelected.addEventListener("click", () => {
-   categoryOptionsContainer.classList.toggle("active");
-})
-categoryOptionsList.forEach(o => {
-   o.addEventListener("click", () => {
-      categorySelected.innerHTML = o.querySelector("label").innerHTML;
-      categoryOptionsContainer.classList.remove("active");
-   })
-})
-
-
-// Calendar picker
-let myCalendar = new VanillaCalendar({
-   selector: "#myCalendar"
-})
+   document.addEventListener("DOMContentLoaded", () => UI.ModalWindow.init());
+   
+})(budgetController, UIController).
