@@ -828,8 +828,7 @@ let controller = (function (budget, UI, charts) {
       item.addEventListener("click", dateClickCheck);
    })
 
-  
-
+ 
 
    let addItem = function () {
       let input;
@@ -902,4 +901,4 @@ let controller = (function (budget, UI, charts) {
    document.querySelector(DOM.listsContainer).addEventListener("click", deleteItem);
    document.addEventListener("DOMContentLoaded", () => UI.ModalWindow.init());
    
-})(budgetController, UIController).
+})(budgetController, UIController)
