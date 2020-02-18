@@ -2,15 +2,50 @@
 data = JSON.parse(localStorage.getItem("Data"));
 monthData = JSON.parse(localStorage.getItem("MonthData"));
 
+// Custom Select Box for months
+const monthSelected = document.querySelector(".selected.selected-month");
+const monthOptionsContainer = document.querySelector(".options-container.options-container-month");
+const monthOptionsList = document.querySelectorAll(".option.option-month");
 
 
-document.querySelector(".show-stats-jan").addEventListener("click", displayJanChart)
-document.querySelector(".show-stats-feb").addEventListener("click", displayFebChart);
-document.querySelector(".show-stats-mar").addEventListener("click", displayMarChart);
-document.querySelector(".show-stats-apr").addEventListener("click", displayAprChart);
-document.querySelector(".show-stats-may").addEventListener("click", displayMayChart);
-document.querySelector(".show-stats-jun").addEventListener("click", displayJunChart);
-document.querySelector(".show-stats-jul").addEventListener("click", displayJulChart);
+monthSelected.addEventListener("click", () => {
+   monthOptionsContainer.classList.toggle("active");
+
+})
+monthOptionsList.forEach(o => {
+   o.addEventListener("click", () => {
+      monthSelected.innerHTML = o.querySelector("label").innerHTML;
+      monthOptionsContainer.classList.remove("active");
+      if (monthSelected.innerHTML == "February") {
+         // don't create a new canvas element if there is one already
+         if (!document.getElementById("myChartFeb")) {
+            // console.log("there is already a canvas for Feb chart")
+            let canvas = document.createElement("canvas");
+            canvas.setAttribute("id", "myChartFeb");
+            document.body.appendChild(canvas);
+            displayFebChart()
+         }
+
+      } else if (monthSelected.innerHTML == "March") {
+         if (!document.getElementById("myChartMar")) {
+            let canvas = document.createElement("canvas");
+            canvas.setAttribute("id", "myChartMar");
+            document.body.appendChild(canvas);
+            displayMarChart()
+         }
+      }
+   })
+})
+
+
+
+// document.querySelector(".show-stats-jan").addEventListener("click", displayJanChart)
+// document.querySelector(".show-stats-feb").addEventListener("click", displayFebChart);
+// document.querySelector(".show-stats-mar").addEventListener("click", displayMarChart);
+// document.querySelector(".show-stats-apr").addEventListener("click", displayAprChart);
+// document.querySelector(".show-stats-may").addEventListener("click", displayMayChart);
+// document.querySelector(".show-stats-jun").addEventListener("click", displayJunChart);
+// document.querySelector(".show-stats-jul").addEventListener("click", displayJulChart);
 
 
 function displayJanChart() {

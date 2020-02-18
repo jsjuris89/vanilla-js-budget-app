@@ -27,6 +27,8 @@ gulp.task('css', function(){
  })
 
  gulp.task('copy', async function() {
+     gulp.src('./src/*.html').pipe(gulp.dest('./build'));
+     gulp.src('./src/js/vendors/**').pipe(gulp.dest('./build/js/vendors'));
      gulp.src('./src/img/**').pipe(gulp.dest('./build/img'));
  })
 
