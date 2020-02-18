@@ -819,14 +819,14 @@ let controller = (function (budget, UI, charts) {
    UI.showOldDomItems();
 
    // calendar date selected validation for if statement
-   let datePicked = false;
-   function dateClickCheck() {
-      datePicked = true;
-   }
-   let dates = document.getElementsByClassName("vanilla-calendar-date");
-   Array.from(dates).forEach(function (item) {
-      item.addEventListener("click", dateClickCheck);
-   })
+   // let datePicked = false;
+   // function dateClickCheck() {
+   //    datePicked = true;
+   // }
+   // let dates = document.getElementsByClassName("vanilla-calendar-date");
+   // Array.from(dates).forEach(function (item) {
+   //    item.addEventListener("click", dateClickCheck);
+   // })
 
  
 
@@ -838,7 +838,7 @@ let controller = (function (budget, UI, charts) {
 
       
       // Validate data inputed by user
-      if (input.description !== "" && !isNaN(input.value) && input.value > 0 && datePicked == true) {
+      if (input.description !== "" && !isNaN(input.value) && input.value > 0) {
 
          // Success message to user
          UI.ModalWindow.openModal({

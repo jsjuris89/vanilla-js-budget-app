@@ -41,7 +41,7 @@ monthOptionsList.forEach(o => {
          if (!document.getElementById("myChartJan")) {
             let canvas = document.createElement("canvas");
             canvas.setAttribute("id", "myChartJan");
-            document.body.appendChild(canvas);
+            document.querySelector(".chartWrapper").appendChild(canvas);
             displayJanChart()
          }
       }
@@ -67,10 +67,10 @@ monthOptionsList.forEach(o => {
          }
 
          // Step 2 - if there is no canvas & chart for selected month - display it
-         if (!document.getElementById("myChartFeb")) {
+         if (!document.getElementById("myChart")) {
             let canvas = document.createElement("canvas");
             canvas.setAttribute("id", "myChartFeb");
-            document.body.appendChild(canvas);
+            document.querySelector(".chartWrapper").appendChild(canvas);
             displayFebChart()
          }
       }
@@ -99,12 +99,12 @@ monthOptionsList.forEach(o => {
          if (!document.getElementById("myChartMar")) {
             let canvas = document.createElement("canvas");
             canvas.setAttribute("id", "myChartMar");
-            document.body.appendChild(canvas);
+            document.querySelector(".chartWrapper").appendChild(canvas);
             displayMarChart()
          }
       }
 
-       // April chart
+      // April chart
       // Step 1 - destroy previously made chart
       if (monthSelected.innerHTML == "April") {
          if (document.getElementById("myChartJan")) {
@@ -128,7 +128,7 @@ monthOptionsList.forEach(o => {
          if (!document.getElementById("myChartApr")) {
             let canvas = document.createElement("canvas");
             canvas.setAttribute("id", "myChartApr");
-            document.body.appendChild(canvas);
+            document.querySelector(".chartWrapper").appendChild(canvas);
             displayAprChart()
          }
       }
@@ -137,6 +137,22 @@ monthOptionsList.forEach(o => {
 
 function displayJanChart() {
    let ctx = document.getElementById('myChartJan').getContext('2d');
+
+   // Orange Gradient
+   let orangeGradient = ctx.createLinearGradient(0, 0, 0, 300);
+   orangeGradient.addColorStop(0, "#FD3F2F");
+   orangeGradient.addColorStop(1, "#FACE15");
+
+   // Blue Gradient
+   let blueGradient = ctx.createLinearGradient(0, 0, 0, 300);
+   blueGradient.addColorStop(0, "#6956EC");
+   blueGradient.addColorStop(1, "#56B2BA");
+
+   // Pink Gradient
+   let pinkGradient = ctx.createLinearGradient(0, 0, 0, 300);
+   pinkGradient.addColorStop(0, "#8D4DE8");
+   pinkGradient.addColorStop(1, "#FF2366");
+
    let newChart = new Chart(ctx, {
       type: "pie",
 
@@ -145,7 +161,7 @@ function displayJanChart() {
          // labels: ["food", "transportation", "other"],
          datasets: [{
             label: "My expenses by category",
-            backgroundColor: ['rgb(30, 136, 15)', 'rgb(49, 98, 190)', 'rgb(158, 37, 148)'],
+            backgroundColor: [orangeGradient, blueGradient, pinkGradient],
             borderColor: 'rgb(255, 255, 255)',
             data: [monthData.jan.categories[Object.keys(monthData.jan.categories)[0]], monthData.jan.categories[Object.keys(monthData.jan.categories)[1]], monthData.jan.categories[Object.keys(monthData.jan.categories)[2]]]
          }]
@@ -156,6 +172,24 @@ function displayJanChart() {
 
 function displayFebChart() {
    let ctx = document.getElementById('myChartFeb').getContext('2d');
+
+   // Orange Gradient
+   let orangeGradient = ctx.createLinearGradient(0, 0, 0, 300);
+   orangeGradient.addColorStop(0, "#FD3F2F");
+   orangeGradient.addColorStop(1, "#FACE15");
+
+   // Blue Gradient
+   let blueGradient = ctx.createLinearGradient(0, 0, 0, 300);
+   blueGradient.addColorStop(0, "#6956EC");
+   blueGradient.addColorStop(1, "#56B2BA");
+
+   // Pink Gradient
+   let pinkGradient = ctx.createLinearGradient(0, 0, 0, 300);
+   pinkGradient.addColorStop(0, "#8D4DE8");
+   pinkGradient.addColorStop(1, "#FF2366");
+
+
+
    let newChart = new Chart(ctx, {
       type: "pie",
 
@@ -163,10 +197,14 @@ function displayFebChart() {
          labels: [Object.keys(monthData.feb.categories)[0], Object.keys(monthData.feb.categories)[1], Object.keys(monthData.feb.categories)[2]],
          datasets: [{
             label: "My expenses by category",
-            backgroundColor: ['rgb(30, 136, 15)', 'rgb(49, 98, 190)', 'rgb(158, 37, 148)'],
+            backgroundColor: [orangeGradient, blueGradient, pinkGradient],
             borderColor: 'rgb(255, 255, 255)',
             data: [monthData.feb.categories[Object.keys(monthData.feb.categories)[0]], monthData.feb.categories[Object.keys(monthData.feb.categories)[1]], monthData.feb.categories[Object.keys(monthData.feb.categories)[2]]]
-         }]
+         }],
+         options: {
+            // responsive: false,
+            maintainAspectRatio: false
+         }
       }
    });
    return febChart = newChart;
@@ -174,6 +212,22 @@ function displayFebChart() {
 
 function displayMarChart() {
    let ctx = document.getElementById('myChartMar').getContext('2d');
+   
+   // Orange Gradient
+   let orangeGradient = ctx.createLinearGradient(0, 0, 0, 300);
+   orangeGradient.addColorStop(0, "#FD3F2F");
+   orangeGradient.addColorStop(1, "#FACE15");
+
+   // Blue Gradient
+   let blueGradient = ctx.createLinearGradient(0, 0, 0, 300);
+   blueGradient.addColorStop(0, "#6956EC");
+   blueGradient.addColorStop(1, "#56B2BA");
+
+   // Pink Gradient
+   let pinkGradient = ctx.createLinearGradient(0, 0, 0, 300);
+   pinkGradient.addColorStop(0, "#8D4DE8");
+   pinkGradient.addColorStop(1, "#FF2366");
+
    let newChart = new Chart(ctx, {
       type: "pie",
 
@@ -181,7 +235,7 @@ function displayMarChart() {
          labels: [Object.keys(monthData.mar.categories)[0], Object.keys(monthData.mar.categories)[1], Object.keys(monthData.mar.categories)[2]],
          datasets: [{
             label: "My expenses by category",
-            backgroundColor: ['rgb(30, 136, 15)', 'rgb(49, 98, 190)', 'rgb(158, 37, 148)'],
+            backgroundColor: [orangeGradient, blueGradient, pinkGradient],
             borderColor: 'rgb(255, 255, 255)',
             data: [monthData.mar.categories[Object.keys(monthData.mar.categories)[0]], monthData.mar.categories[Object.keys(monthData.mar.categories)[1]], monthData.mar.categories[Object.keys(monthData.mar.categories)[2]]]
          }]
@@ -192,6 +246,22 @@ function displayMarChart() {
 
 function displayAprChart() {
    let ctx = document.getElementById('myChartApr').getContext('2d');
+   
+   // Orange Gradient
+   let orangeGradient = ctx.createLinearGradient(0, 0, 0, 300);
+   orangeGradient.addColorStop(0, "#FD3F2F");
+   orangeGradient.addColorStop(1, "#FACE15");
+
+   // Blue Gradient
+   let blueGradient = ctx.createLinearGradient(0, 0, 0, 300);
+   blueGradient.addColorStop(0, "#6956EC");
+   blueGradient.addColorStop(1, "#56B2BA");
+
+   // Pink Gradient
+   let pinkGradient = ctx.createLinearGradient(0, 0, 0, 300);
+   pinkGradient.addColorStop(0, "#8D4DE8");
+   pinkGradient.addColorStop(1, "#FF2366");
+
    let newChart = new Chart(ctx, {
       type: "pie",
 
@@ -199,7 +269,7 @@ function displayAprChart() {
          labels: [Object.keys(monthData.apr.categories)[0], Object.keys(monthData.apr.categories)[1], Object.keys(monthData.apr.categories)[2]],
          datasets: [{
             label: "My expenses by category",
-            backgroundColor: ['rgb(30, 136, 15)', 'rgb(49, 98, 190)', 'rgb(158, 37, 148)'],
+            backgroundColor: [orangeGradient, blueGradient, pinkGradient],
             borderColor: 'rgb(255, 255, 255)',
             data: [monthData.apr.categories[Object.keys(monthData.apr.categories)[0]], monthData.apr.categories[Object.keys(monthData.apr.categories)[1]], monthData.apr.categories[Object.keys(monthData.apr.categories)[2]]]
          }]

@@ -12,34 +12,41 @@
    <header>
       <nav>
          <ul>
-            <li><a href="/build/index.html"><img src="./img/icons/home_icon.svg">Home</a></li>
+            <li><a href="index.html"><img src="./img/icons/home_icon.svg">Home</a></li>
             <li><a href="statistics.html"><img src="./img/icons/stat_icon.svg" alt="">Statistics</a></li>
          </ul>
       </nav>
    </header>
 
-   <div class="select-box">
-      <div class="options-container options-container-month">
-         <div class="option option-month">
-            <input type="radio" class="radio">
-            <label>January</label>
-         </div>
-         <div class="option option-month">
-            <input type="radio" class="radio">
-            <label>February</label>
-         </div>
-         <div class="option option-month">
-            <input type="radio" class="radio">
-            <label>March</label>
-         </div>
-         <div class="option option-month">
-            <input type="radio" class="radio">
-            <label>April</label>
-         </div>
-      </div>
+   <h1>Month Statistics</h1>
 
-      <div class="selected selected-month">Choose month</div>
+   <div class="wrapper-select-box">
+      <div class="select-box select-box-statistics">
+         <div class="options-container options-container-month">
+            <div class="option option-month">
+               <input type="radio" class="radio">
+               <label>January</label>
+            </div>
+            <div class="option option-month">
+               <input type="radio" class="radio">
+               <label>February</label>
+            </div>
+            <div class="option option-month">
+               <input type="radio" class="radio">
+               <label>March</label>
+            </div>
+            <div class="option option-month">
+               <input type="radio" class="radio">
+               <label>April</label>
+            </div>
+         </div>
+   
+         <div class="selected selected-month">Choose month</div>
+      </div>
    </div>
+
+   <div class="chartWrapper"></div>
+
 
    <script src="./js/stats.js"></script>
 </body>
