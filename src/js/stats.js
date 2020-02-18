@@ -16,22 +16,120 @@ monthOptionsList.forEach(o => {
    o.addEventListener("click", () => {
       monthSelected.innerHTML = o.querySelector("label").innerHTML;
       monthOptionsContainer.classList.remove("active");
+
+      // January chart
+      // Step 1 - destroy previously made chart
+      if (monthSelected.innerHTML == "January") {
+         if (document.getElementById("myChartFeb")) {
+            febChart.destroy();
+            // also destroy canvas element from DOM
+            let febCanvas = document.querySelector("#myChartFeb");
+            febCanvas.parentElement.removeChild(febCanvas);
+         } else if (document.getElementById("myChartMar")) {
+            marChart.destroy();
+            // also destroy canvas element from DOM
+            let marCanvas = document.querySelector("#myChartMar");
+            marCanvas.parentElement.removeChild(marCanvas);
+         } else if (document.getElementById("myChartApr")) {
+            aprChart.destroy();
+            // also destroy canvas element from DOM
+            let aprCanvas = document.querySelector("#myChartApr");
+            aprCanvas.parentElement.removeChild(aprCanvas);
+         }
+
+         // Step 2 - if there is no canvas & chart for selected month - display it
+         if (!document.getElementById("myChartJan")) {
+            let canvas = document.createElement("canvas");
+            canvas.setAttribute("id", "myChartJan");
+            document.body.appendChild(canvas);
+            displayJanChart()
+         }
+      }
+
+      // February chart
+      // Step 1 - destroy previously made chart
       if (monthSelected.innerHTML == "February") {
-         // don't create a new canvas element if there is one already
+         if (document.getElementById("myChartJan")) {
+            janChart.destroy();
+            // also destroy canvas element from DOM
+            let janCanvas = document.querySelector("#myChartJan");
+            janCanvas.parentElement.removeChild(janCanvas);
+         } else if (document.getElementById("myChartMar")) {
+            marChart.destroy();
+            // also destroy canvas element from DOM
+            let marCanvas = document.querySelector("#myChartMar");
+            marCanvas.parentElement.removeChild(marCanvas);
+         } else if (document.getElementById("myChartApr")) {
+            aprChart.destroy();
+            // also destroy canvas element from DOM
+            let aprCanvas = document.querySelector("#myChartApr");
+            aprCanvas.parentElement.removeChild(aprCanvas);
+         }
+
+         // Step 2 - if there is no canvas & chart for selected month - display it
          if (!document.getElementById("myChartFeb")) {
-            // console.log("there is already a canvas for Feb chart")
             let canvas = document.createElement("canvas");
             canvas.setAttribute("id", "myChartFeb");
             document.body.appendChild(canvas);
             displayFebChart()
          }
+      }
 
-      } else if (monthSelected.innerHTML == "March") {
+      // March chart
+      // Step 1 - destroy previously made chart
+      if (monthSelected.innerHTML == "March") {
+         if (document.getElementById("myChartJan")) {
+            janChart.destroy();
+            // also destroy canvas element from DOM
+            let janCanvas = document.querySelector("#myChartJan");
+            janCanvas.parentElement.removeChild(janCanvas);
+         } else if (document.getElementById("myChartFeb")) {
+            febChart.destroy();
+            // also destroy canvas element from DOM
+            let febCanvas = document.querySelector("#myChartFeb");
+            febCanvas.parentElement.removeChild(febCanvas);
+         } else if (document.getElementById("myChartApr")) {
+            aprChart.destroy();
+            // also destroy canvas element from DOM
+            let aprCanvas = document.querySelector("#myChartApr");
+            aprCanvas.parentElement.removeChild(aprCanvas);
+         }
+
+         // Step 2 - if there is no canvas & chart for selected month - display it
          if (!document.getElementById("myChartMar")) {
             let canvas = document.createElement("canvas");
             canvas.setAttribute("id", "myChartMar");
             document.body.appendChild(canvas);
             displayMarChart()
+         }
+      }
+
+       // April chart
+      // Step 1 - destroy previously made chart
+      if (monthSelected.innerHTML == "April") {
+         if (document.getElementById("myChartJan")) {
+            janChart.destroy();
+            // also destroy canvas element from DOM
+            let janCanvas = document.querySelector("#myChartJan");
+            janCanvas.parentElement.removeChild(janCanvas);
+         } else if (document.getElementById("myChartFeb")) {
+            febChart.destroy();
+            // also destroy canvas element from DOM
+            let febCanvas = document.querySelector("#myChartFeb");
+            febCanvas.parentElement.removeChild(febCanvas);
+         } else if (document.getElementById("myChartMar")) {
+            marChart.destroy();
+            // also destroy canvas element from DOM
+            let marCanvas = document.querySelector("#myChartMar");
+            marCanvas.parentElement.removeChild(marCanvas);
+         }
+
+         // Step 2 - if there is no canvas & chart for selected month - display it
+         if (!document.getElementById("myChartApr")) {
+            let canvas = document.createElement("canvas");
+            canvas.setAttribute("id", "myChartApr");
+            document.body.appendChild(canvas);
+            displayAprChart()
          }
       }
    })
