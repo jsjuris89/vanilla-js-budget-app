@@ -135,17 +135,6 @@ monthOptionsList.forEach(o => {
    })
 })
 
-
-
-// document.querySelector(".show-stats-jan").addEventListener("click", displayJanChart)
-// document.querySelector(".show-stats-feb").addEventListener("click", displayFebChart);
-// document.querySelector(".show-stats-mar").addEventListener("click", displayMarChart);
-// document.querySelector(".show-stats-apr").addEventListener("click", displayAprChart);
-// document.querySelector(".show-stats-may").addEventListener("click", displayMayChart);
-// document.querySelector(".show-stats-jun").addEventListener("click", displayJunChart);
-// document.querySelector(".show-stats-jul").addEventListener("click", displayJulChart);
-
-
 function displayJanChart() {
    let ctx = document.getElementById('myChartJan').getContext('2d');
    let newChart = new Chart(ctx, {
