@@ -2,6 +2,7 @@
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+// test2
 // Budget Controller
 var budgetController = function () {
   var Expense = function Expense(id, category, description, value, date) {
@@ -796,17 +797,14 @@ var controller = function (budget, UI, charts) {
   UI.displayMonth();
   updateBudget();
   UI.showOldDomItems(); // calendar date selected validation for if statement
-
-  var datePicked = false;
-
-  function dateClickCheck() {
-    datePicked = true;
-  }
-
-  var dates = document.getElementsByClassName("vanilla-calendar-date");
-  Array.from(dates).forEach(function (item) {
-    item.addEventListener("click", dateClickCheck);
-  });
+  // let datePicked = false;
+  // function dateClickCheck() {
+  //    datePicked = true;
+  // }
+  // let dates = document.getElementsByClassName("vanilla-calendar-date");
+  // Array.from(dates).forEach(function (item) {
+  //    item.addEventListener("click", dateClickCheck);
+  // })
 
   var addItem = function addItem() {
     var input;
@@ -814,7 +812,7 @@ var controller = function (budget, UI, charts) {
 
     input = UI.getInput(); // Validate data inputed by user
 
-    if (input.description !== "" && !isNaN(input.value) && input.value > 0 && datePicked == true) {
+    if (input.description !== "" && !isNaN(input.value) && input.value > 0) {
       // Success message to user
       UI.ModalWindow.openModal({
         title: "Success",

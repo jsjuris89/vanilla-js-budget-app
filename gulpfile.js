@@ -2,38 +2,56 @@ const gulp = require('gulp');
 const sass = require('gulp-sass');
 const sourcemaps = require('gulp-sourcemaps');
 const babel = require('gulp-babel');
-const uglify = require('gulp-uglify-es').default;
-const rename = require('gulp-rename');
+const browserSync = require('browser-sync').create();
+const reload = browserSync.reload;
+
+
+let htmlWatch = './src/*.html';
+
+let styleSRC = './src/scss/main.scss';
+let styleBUILD = './build/css';
+let styleWatch = './src/scss/**/*.scss';
+
+let jsSRC = './src/js/app.js';
+let jsBUILD = './build/js/';
+let jsWatch = './src/js/**/*.js'
+
+
+gulp.task('browser-sync', function () {
+    browserSync.init({
+        server: {
+            baseDir: ['./src', './build'],
+        }
+    });
+})
 
 // Compile scss into css
-gulp.task('css', function(){
-    return gulp.src('./src/scss/**/*.scss')
-    .pipe(sourcemaps.init())
-    .pipe(sass())
-    .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest('./build/css'))
- });
+gulp.task('style', function () {
+    return gulp.src(styleSRC)
+        .pipe(sourcemaps.init())
+        .pipe(sass())
+        .pipe(sourcemaps.write('.'))
+        .pipe(gulp.dest(styleBUILD))
+        .pipe(browserSync.stream())
+});
 
- gulp.task('js', function() {
-     return gulp.src('./src/js/app.js')
-     .pipe(sourcemaps.init())
-     .pipe(babel({
-         presets: ['@babel/preset-env']
+gulp.task('js', function () {
+    return gulp.src(jsSRC)
+        .pipe(sourcemaps.init())
+        .pipe(babel({
+            presets: ['@babel/preset-env']
         }))
-    //  .pipe(uglify())
-    //  .pipe(rename({ suffix: '.min' }))
-     .pipe(sourcemaps.write('.'))
-     .pipe(gulp.dest('build/js'))
- })
+        .pipe(sourcemaps.write('.'))
+        .pipe(gulp.dest(jsBUILD))
+        .pipe(browserSync.stream())
+})
 
- gulp.task('copy', async function() {
-     gulp.src('./src/*.html').pipe(gulp.dest('./build'));
-     gulp.src('./src/js/vendors/**').pipe(gulp.dest('./build/js/vendors'));
-     gulp.src('./src/img/**').pipe(gulp.dest('./build/img'));
- })
+
+gulp.task('default', function () {
+    gulp.watch(htmlWatch).on('change', reload);
+    gulp.watch(styleWatch, gulp.series('style'));
+    gulp.watch(jsWatch, gulp.series('js'));
+})
 
 // Watch task
-gulp.task('watch', function(){
-    gulp.watch('./src/scss/**/*.scss', gulp.series('css'));
-    gulp.watch('./*.js', gulp.series('js'));
-});
+gulp.task('watch', gulp.parallel('default', 'browser-sync'));
