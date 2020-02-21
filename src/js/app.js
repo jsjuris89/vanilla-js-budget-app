@@ -617,6 +617,14 @@ let UIController = (function () {
       o.addEventListener("click", () => {
          typeSelected.innerHTML = o.querySelector("label").innerHTML;
          typeOptionsContainer.classList.remove("active");
+
+         // Only show 'select box #2' if expense category chosen by user
+         if (typeSelected.innerHTML == "Income") {
+            document.querySelector(".select-box-category").style.display = "none"
+         }
+         if (typeSelected.innerHTML == "Expense") {
+            document.querySelector(".select-box-category").style.display = "flex";
+         }
       })
    })
 
