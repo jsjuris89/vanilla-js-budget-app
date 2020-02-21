@@ -4,7 +4,10 @@
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <title>Statistics</title>
-   <link rel="stylesheet" href="css/main.css">
+   <!-- path for VS Code liveserver -->
+   <!-- <link rel="stylesheet" href="../build/css/main.min.css"> -->
+   <!-- path for localhost:3000 server -->
+   <link rel="stylesheet" href="css/main.min.css">
    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js"></script>
 
 </head>
@@ -39,14 +42,24 @@
                <input type="radio" class="radio">
                <label>April</label>
             </div>
+            <div class="option option-month">
+               <input type="radio" class="radio">
+               <label>May</label>
+            </div>
+            <div class="option option-month">
+               <input type="radio" class="radio">
+               <label>June</label>
+            </div>
+            <div class="option option-month">
+               <input type="radio" class="radio">
+               <label>July</label>
+            </div>
          </div>
    
          <div class="selected selected-month">Choose month</div>
       </div>
    </div>
-
    <div class="chartWrapper"></div>
-
 
    <script src="./js/stats.js"></script>
 </body>

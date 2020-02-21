@@ -1,4 +1,3 @@
-// test2
 // Budget Controller
 let budgetController = (function () {
 
@@ -132,7 +131,7 @@ let budgetController = (function () {
    if (localStorage.getItem("Data") == null) {
       localStorage.setItem("Data", JSON.stringify(data));
    } else {
-      console.log("There already is a key -- DATA -- in localstorage.")
+      // console.log("There already is a key -- DATA -- in localstorage.")
       // if there is Data in localstorage get it
       data = JSON.parse(localStorage.getItem("Data"));
    }
@@ -140,7 +139,7 @@ let budgetController = (function () {
    if (localStorage.getItem("MonthData") == null) {
       localStorage.setItem("MonthData", JSON.stringify(monthData));
    } else {
-      console.log("There is already a key -- MONTHDATA -- in localstorage.")
+      // console.log("There is already a key -- MONTHDATA -- in localstorage.")
       monthData = JSON.parse(localStorage.getItem("MonthData"));
    }
 
@@ -261,7 +260,6 @@ let budgetController = (function () {
                   return true
                }
             })
-            console.log(februaryExp)
 
             let totalFood = 0;
             let totalTransport = 0;
@@ -573,7 +571,6 @@ let budgetController = (function () {
             percentage: data.percentage
          }
       },
-
       testData: function () {
          console.log(data);
       },
@@ -588,9 +585,6 @@ let budgetController = (function () {
       }
    }
 })();
-
-
-
 
 
 // UI Controller
@@ -646,7 +640,7 @@ let UIController = (function () {
       selector: "#myCalendar"
    })
 
-   
+
 
    return {
       getInput: function () {
@@ -687,13 +681,12 @@ let UIController = (function () {
       ModalWindow: {
          init() {
             document.body.addEventListener("click", e => {
-               console.log(e.target);
                if (e.target.classList.contains("modal-close")) {
                   this.closeModal(e.target)
                }
             })
          },
-      
+
          getHtmlTemplate(modalOptions) {
             return `
                <div class="modal-overlay">
@@ -714,14 +707,13 @@ let UIController = (function () {
                title: "Modal Title",
                content: "Modal Content"
             }, modalOptions);
-      
+
             const modalTemplate = this.getHtmlTemplate(modalOptions);
             document.body.insertAdjacentHTML("beforeend", modalTemplate);
          },
          closeModal(closeButton) {
             const modalOverlay = closeButton.parentElement.parentElement.parentElement;
             modalOverlay.parentElement.removeChild(modalOverlay);
-            // document.body.removeChild(modalOverlay);
          }
       },
       addItemToDom: function (obj, type) {
@@ -801,7 +793,6 @@ let UIController = (function () {
 })();
 
 
-
 // Global App Controller
 let controller = (function (budget, UI, charts) {
 
@@ -819,25 +810,30 @@ let controller = (function (budget, UI, charts) {
    updateBudget();
    UI.showOldDomItems();
 
-   // calendar date selected validation for if statement
-   // let datePicked = false;
-   // function dateClickCheck() {
-   //    datePicked = true;
-   // }
-   // let dates = document.getElementsByClassName("vanilla-calendar-date");
-   // Array.from(dates).forEach(function (item) {
-   //    item.addEventListener("click", dateClickCheck);
-   // })
-
- 
 
    let addItem = function () {
       let input;
       let newItem;
       // 1. Get the input data from user
-      input = UI.getInput();
-
       
+      // Warn user to select date by showing modal warning
+      let calDateList = document.querySelectorAll(".vanilla-calendar-date");
+     
+     let calDateListArr = Array.from(calDateList);
+     let isDateSelected = calDateListArr.some(function(item) {
+        if(item.classList.contains("vanilla-calendar-date--selected")) {
+           console.log(item)
+           return true
+        }
+     })
+     if (isDateSelected == false) {
+         UI.ModalWindow.openModal({
+            title: "Error",
+            content: "Date not selected!"
+         });
+     }
+
+      input = UI.getInput();
       // Validate data inputed by user
       if (input.description !== "" && !isNaN(input.value) && input.value > 0) {
 
@@ -853,20 +849,15 @@ let controller = (function (budget, UI, charts) {
 
          // 4. Add the item to the DOM
          UI.addItemToDom(newItem, input.type);
-         // 5. Clear the fields in DOM
+         // 5. Clear input fields in DOM
          UI.clearFields();
 
          // 6. Update budget in DOM
          updateBudget();
 
       } else {
-         console.log("Validation failed!");
-            // UI.ModalWindow.openModal({
-            //    title: "Error",
-            //    content: "Some data still missing.."
-            // });
-         }
-      
+         console.log("User Input Validation failed!");
+      }
    }
 
    let deleteItem = function (event) {
@@ -881,18 +872,17 @@ let controller = (function (budget, UI, charts) {
          splitID = itemID.split("-");
          type = splitID[0];
          ID = parseInt(splitID[1]);
-         // console.log("ID is: " + ID);
       }
-
-      // 1. delete the item from the data object
+      // 1. delete item from the data object
       budget.deleteItemFromArray(type, ID);
       // 2. update monthData object
       budget.updateAllMonths();
-      // 3. delete the item from DOM
+      // 3. delete item from DOM
       UI.deleteItemFromDom(itemID);
-      // 4. Update and show the new budget
+      // 4. Update and show new budget
       updateBudget();
    };
+
    document.querySelector(DOM.inputBtn).addEventListener("click", addItem);
    document.addEventListener('keypress', function (event) {
       if (event.keyCode === 13) {
@@ -901,5 +891,5 @@ let controller = (function (budget, UI, charts) {
    });
    document.querySelector(DOM.listsContainer).addEventListener("click", deleteItem);
    document.addEventListener("DOMContentLoaded", () => UI.ModalWindow.init());
-   
+
 })(budgetController, UIController)

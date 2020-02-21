@@ -2,7 +2,6 @@
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-// test2
 // Budget Controller
 var budgetController = function () {
   var Expense = function Expense(id, category, description, value, date) {
@@ -134,15 +133,15 @@ var budgetController = function () {
   if (localStorage.getItem("Data") == null) {
     localStorage.setItem("Data", JSON.stringify(data));
   } else {
-    console.log("There already is a key -- DATA -- in localstorage."); // if there is Data in localstorage get it
-
+    // console.log("There already is a key -- DATA -- in localstorage.")
+    // if there is Data in localstorage get it
     data = JSON.parse(localStorage.getItem("Data"));
   }
 
   if (localStorage.getItem("MonthData") == null) {
     localStorage.setItem("MonthData", JSON.stringify(monthData));
   } else {
-    console.log("There is already a key -- MONTHDATA -- in localstorage.");
+    // console.log("There is already a key -- MONTHDATA -- in localstorage.")
     monthData = JSON.parse(localStorage.getItem("MonthData"));
   }
 
@@ -263,7 +262,6 @@ var budgetController = function () {
             return true;
           }
         });
-        console.log(februaryExp);
         var totalFood = 0;
         var totalTransport = 0;
         var totalOther = 0; // 3 if's for delete very last item from monthData obj
@@ -698,8 +696,6 @@ var UIController = function () {
         var _this = this;
 
         document.body.addEventListener("click", function (e) {
-          console.log(e.target);
-
           if (e.target.classList.contains("modal-close")) {
             _this.closeModal(e.target);
           }
@@ -719,7 +715,7 @@ var UIController = function () {
       },
       closeModal: function closeModal(closeButton) {
         var modalOverlay = closeButton.parentElement.parentElement.parentElement;
-        modalOverlay.parentElement.removeChild(modalOverlay); // document.body.removeChild(modalOverlay);
+        modalOverlay.parentElement.removeChild(modalOverlay);
       }
     },
     addItemToDom: function addItemToDom(obj, type) {
@@ -796,19 +792,28 @@ var controller = function (budget, UI, charts) {
 
   UI.displayMonth();
   updateBudget();
-  UI.showOldDomItems(); // calendar date selected validation for if statement
-  // let datePicked = false;
-  // function dateClickCheck() {
-  //    datePicked = true;
-  // }
-  // let dates = document.getElementsByClassName("vanilla-calendar-date");
-  // Array.from(dates).forEach(function (item) {
-  //    item.addEventListener("click", dateClickCheck);
-  // })
+  UI.showOldDomItems();
 
   var addItem = function addItem() {
     var input;
     var newItem; // 1. Get the input data from user
+    // Warn user to select date by showing modal warning
+
+    var calDateList = document.querySelectorAll(".vanilla-calendar-date");
+    var calDateListArr = Array.from(calDateList);
+    var isDateSelected = calDateListArr.some(function (item) {
+      if (item.classList.contains("vanilla-calendar-date--selected")) {
+        console.log(item);
+        return true;
+      }
+    });
+
+    if (isDateSelected == false) {
+      UI.ModalWindow.openModal({
+        title: "Error",
+        content: "Date not selected!"
+      });
+    }
 
     input = UI.getInput(); // Validate data inputed by user
 
@@ -823,16 +828,13 @@ var controller = function (budget, UI, charts) {
 
       budget.updateAllMonths(); // 4. Add the item to the DOM
 
-      UI.addItemToDom(newItem, input.type); // 5. Clear the fields in DOM
+      UI.addItemToDom(newItem, input.type); // 5. Clear input fields in DOM
 
       UI.clearFields(); // 6. Update budget in DOM
 
       updateBudget();
     } else {
-      console.log("Validation failed!"); // UI.ModalWindow.openModal({
-      //    title: "Error",
-      //    content: "Some data still missing.."
-      // });
+      console.log("User Input Validation failed!");
     }
   };
 
@@ -846,15 +848,15 @@ var controller = function (budget, UI, charts) {
     if (itemID) {
       splitID = itemID.split("-");
       type = splitID[0];
-      ID = parseInt(splitID[1]); // console.log("ID is: " + ID);
-    } // 1. delete the item from the data object
+      ID = parseInt(splitID[1]);
+    } // 1. delete item from the data object
 
 
     budget.deleteItemFromArray(type, ID); // 2. update monthData object
 
-    budget.updateAllMonths(); // 3. delete the item from DOM
+    budget.updateAllMonths(); // 3. delete item from DOM
 
-    UI.deleteItemFromDom(itemID); // 4. Update and show the new budget
+    UI.deleteItemFromDom(itemID); // 4. Update and show new budget
 
     updateBudget();
   };
