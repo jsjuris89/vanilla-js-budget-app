@@ -641,6 +641,11 @@ var UIController = function () {
 
       if (typeSelected.innerHTML == "Expense") {
         document.querySelector(".select-box-category").style.display = "flex";
+        var flexItems = document.getElementsByClassName("flex-item");
+
+        for (var i = 0; i < flexItems.length; i++) {
+          flexItems[i].style.flex = "0 0 18%";
+        }
       }
     });
   }); // Custom Select Box #2
@@ -879,5 +884,8 @@ var controller = function (budget, UI, charts) {
   document.addEventListener("DOMContentLoaded", function () {
     return UI.ModalWindow.init();
   });
-}(budgetController, UIController);
+}(budgetController, UIController); // let flexItems = document.getElementsByClassName("flex-item");
+// for (let i = 0; i < flexItems.length; i++) {
+//    flexItems[i].style.flex = "0 0 18%"
+// }
 //# sourceMappingURL=app.js.map

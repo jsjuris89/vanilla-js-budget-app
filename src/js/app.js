@@ -624,9 +624,14 @@ let UIController = (function () {
          }
          if (typeSelected.innerHTML == "Expense") {
             document.querySelector(".select-box-category").style.display = "flex";
+            let flexItems = document.getElementsByClassName("flex-item");
+            for (let i = 0; i < flexItems.length; i++) {
+               flexItems[i].style.flex = "0 0 18%"
+            }
          }
       })
    })
+
 
    // Custom Select Box #2
    const categorySelected = document.querySelector(".selected.selected-category");
@@ -823,23 +828,23 @@ let controller = (function (budget, UI, charts) {
       let input;
       let newItem;
       // 1. Get the input data from user
-      
+
       // Warn user to select date by showing modal warning
       let calDateList = document.querySelectorAll(".vanilla-calendar-date");
-     
-     let calDateListArr = Array.from(calDateList);
-     let isDateSelected = calDateListArr.some(function(item) {
-        if(item.classList.contains("vanilla-calendar-date--selected")) {
-           console.log(item)
-           return true
-        }
-     })
-     if (isDateSelected == false) {
+
+      let calDateListArr = Array.from(calDateList);
+      let isDateSelected = calDateListArr.some(function (item) {
+         if (item.classList.contains("vanilla-calendar-date--selected")) {
+            console.log(item)
+            return true
+         }
+      })
+      if (isDateSelected == false) {
          UI.ModalWindow.openModal({
             title: "Error",
             content: "Date not selected!"
          });
-     }
+      }
 
       input = UI.getInput();
       // Validate data inputed by user
@@ -901,3 +906,8 @@ let controller = (function (budget, UI, charts) {
    document.addEventListener("DOMContentLoaded", () => UI.ModalWindow.init());
 
 })(budgetController, UIController)
+
+// let flexItems = document.getElementsByClassName("flex-item");
+// for (let i = 0; i < flexItems.length; i++) {
+//    flexItems[i].style.flex = "0 0 18%"
+// }

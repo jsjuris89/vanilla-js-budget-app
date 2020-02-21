@@ -69,6 +69,12 @@
          top: 5px;
          transition: all 0.4s; 
       }
+      &.selected-type {
+         width: 150px;
+      }
+      &.selected-category {
+         width: 190px;
+      }
    }
 }
 .select-box-category {
