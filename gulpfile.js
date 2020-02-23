@@ -9,6 +9,7 @@ const reload = browserSync.reload;
 
 
 let htmlWatch = './src/*.html';
+let htmlBUILD = './build';
 
 let styleSRC = './src/scss/main.scss';
 let styleBUILD = './build/css';
@@ -29,6 +30,10 @@ gulp.task('browser-sync', function () {
     });
 })
 
+// Copy HTML files to build directory
+gulp.task('copy-html', function() {
+    return gulp.src(htmlWatch).pipe(gulp.dest(htmlBUILD));
+})
 // Compile scss into css
 gulp.task('style', function () {
     return gulp.src(styleSRC)
@@ -57,6 +62,7 @@ gulp.task('js', function () {
 })
 
 gulp.task('default', function () {
+    gulp.watch(htmlWatch, gulp.series('copy-html'))
     gulp.watch(htmlWatch).on('change', reload);
     gulp.watch(styleWatch, gulp.series('style'));
     gulp.watch(jsWatch, gulp.series('js'));
