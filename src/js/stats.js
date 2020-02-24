@@ -1,6 +1,7 @@
+
 // Get localstorage data
-data = JSON.parse(localStorage.getItem("Data"));
-monthData = JSON.parse(localStorage.getItem("MonthData"));
+let data = JSON.parse(localStorage.getItem("Data"));
+let monthData = JSON.parse(localStorage.getItem("MonthData"));
 
 // Custom Select Box for months
 const monthSelected = document.querySelector(".selected.selected-month");
@@ -98,7 +99,7 @@ monthOptionsList.forEach(o => {
          }
 
          // Step 2 - create the chart
-         if (!document.getElementById("myChart")) {
+         if (!document.getElementById("myChartFeb")) {
             let canvas = document.createElement("canvas");
             canvas.setAttribute("id", "myChartFeb");
             document.querySelector(".chartWrapper").appendChild(canvas);
