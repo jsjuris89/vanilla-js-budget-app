@@ -1,2 +1,4 @@
-vanilla-calendar-master
-node_modules
+node_modules/
+dist/
+.cache/
+.vscode/

@@ -4,20 +4,17 @@
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-   <!-- path for src VS Code liver server -->
-   <!-- <link rel="stylesheet" href="../build/css/main.min.css">  -->
-   <!-- path for localhost:3000 server -->
-   <link rel="stylesheet" href="css/main.min.css">
-   <link rel="stylesheet" href="./js/vendors/vanilla-calendar-master/src/css/vanilla-calendar-min.css">
-   <script src="./js/vendors/vanilla-calendar-master/src/js/vanilla-calendar-min.js"></script>
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js"></script>
-   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-   <title>Juris Money App</title>
-   <!--  -->
-</head>
-<body>
-   
+   <link rel="stylesheet" href="./scss/main.scss">
 
+   <link rel="stylesheet" href="https://raw.githubusercontent.com/marssola/vanilla-calendar/master/src/css/vanilla-calendar-min.css">
+   <script src="https://raw.githubusercontent.com/marssola/vanilla-calendar/master/src/js/vanilla-calendar-min.js"></script>
+
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js"></script>
+   <!-- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> -->
+   <title>Juris Money App</title>
+</head>
+
+<body>
    <header>
       <nav>
          <ul>
@@ -26,21 +23,18 @@
          </ul>
       </nav>
    </header>
-  
 
    <div class="top">
       <div class="budget">
          <div class="budget-title">
             Available Budget in <span class="budget-title-month">%Month%</span>
          </div>
-
             <div class="budget-value-container">
                <svg class="dollar-svg" width="8" height="15" viewBox="0 0 8 15" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path fill-rule="evenodd" clip-rule="evenodd" d="M7.94428 9.41789C7.94428 8.61573 7.71809 7.99011 7.26539 7.54192C6.81238 7.09397 6.11492 6.72118 5.17224 6.42205C4.66826 6.26345 4.29028 6.12623 4.03813 6.00905C3.7863 5.89236 3.61139 5.76908 3.51324 5.63809C3.41508 5.50746 3.36632 5.33957 3.36632 5.13442C3.36632 4.84508 3.47832 4.62098 3.70231 4.46249C3.92614 4.3039 4.23428 4.22436 4.62627 4.22436C5.36352 4.22436 6.04021 4.48583 6.65618 5.00833L7.67829 3.80439C7.03416 3.19747 6.25964 2.81954 5.35424 2.67035V0.598017H3.75846V2.65629C2.96506 2.77738 2.32565 3.07381 1.84039 3.5451C1.35513 4.01687 1.11226 4.60216 1.11226 5.30219C1.11226 6.00221 1.32933 6.57602 1.76315 7.0242C2.19729 7.47215 2.92746 7.85998 3.95445 8.18683C4.4114 8.32601 4.76138 8.45907 5.00425 8.58554C5.2468 8.71091 5.41479 8.85094 5.50854 9.0055C5.60151 9.1591 5.64838 9.35326 5.64838 9.58627C5.64838 9.941 5.51751 10.2214 5.2564 10.426C4.99497 10.6311 4.63555 10.7341 4.17829 10.7341C3.30089 10.7341 2.52636 10.4214 1.85423 9.79619L0.72012 11.0279C1.51352 11.8029 2.52636 12.2413 3.75846 12.3442V14.4726H5.35424V12.2605C6.16652 12.0923 6.80089 11.7588 7.25831 11.2589C7.71557 10.7598 7.94428 10.1464 7.94428 9.41789Z" fill="MidnightBlue"/>
                </svg>
                <div class="budget-value"></div>
             </div>
-
 
          <div class="budget-income">
             <div class="budget-income-text">Income</div>
@@ -64,8 +58,7 @@
       <div class="add">
          <div id="myCalendar" class="vanilla-calendar"></div>
 
-         <div class="add-container">
-            
+         <div class="add-container">         
             <div class="select-box flex-item">
                <div class="options-container options-container-type">
                   <div class="option option-type">
@@ -134,8 +127,6 @@
       </div>
    </div>
  
-   <!-- path for localhost:3000 server -->
-   <script src="js/app.js"></script>
-   
+   <script src="./js/app.js"></script>  
 </body>
 </html>
