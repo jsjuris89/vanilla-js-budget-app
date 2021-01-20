@@ -130,7 +130,6 @@ let budgetController = (function () {
   if (localStorage.getItem("Data") == null) {
     localStorage.setItem("Data", JSON.stringify(data));
   } else {
-    // console.log("There already is a key -- DATA -- in localstorage.")
     // if there is Data in localstorage get it
     data = JSON.parse(localStorage.getItem("Data"));
   }
@@ -138,7 +137,6 @@ let budgetController = (function () {
   if (localStorage.getItem("MonthData") == null) {
     localStorage.setItem("MonthData", JSON.stringify(monthData));
   } else {
-    // console.log("There is already a key -- MONTHDATA -- in localstorage.")
     monthData = JSON.parse(localStorage.getItem("MonthData"));
   }
 
@@ -637,50 +635,49 @@ let UIController = (function () {
   const typeOptionsContainer = document.querySelector(
     ".options-container.options-container-type"
   );
-  const typeOptionsList = document.querySelectorAll(".option.option-type");
 
   typeSelected.addEventListener("click", () => {
     typeOptionsContainer.classList.toggle("active");
   });
-  typeOptionsList.forEach((o) => {
-    o.addEventListener("click", () => {
-      typeSelected.innerHTML = o.querySelector("label").innerHTML;
-      typeOptionsContainer.classList.remove("active");
 
-      // Only show 'select box #2' if expense category chosen by user
-      if (typeSelected.innerHTML == "Income") {
-        document.querySelector(".select-box-category").style.display = "none";
-      }
-      if (typeSelected.innerHTML == "Expense") {
-        document.querySelector(".select-box-category").style.display = "flex";
-        let flexItems = document.getElementsByClassName("flex-item");
-        for (let i = 0; i < flexItems.length; i++) {
-          flexItems[i].style.flex = "0 0 18%";
+  document.querySelectorAll(".option").forEach((item) => {
+    item.addEventListener("click", (e) => {
+      if (e.target.classList.contains("option-type")) {
+        typeSelected.textContent = e.target.querySelector("label").textContent;
+        typeOptionsContainer.classList.remove("active");
+
+        // Only show 'select box #2' if expense category is chosen by user
+        if (typeSelected.textContent == "Expense") {
+          document.querySelector(".select-box-category").style.visibility =
+            "visible";
+        } else if (typeSelected.textContent == "Income") {
+          document.querySelector(".select-box-category").style.visibility =
+            "hidden";
         }
       }
     });
   });
+  // Custom Select Box #1 END
 
   // Custom Select Box #2
-  const categorySelected = document.querySelector(
-    ".selected.selected-category"
-  );
-  const categoryOptionsContainer = document.querySelector(
-    ".options-container.options-container-category"
-  );
-  const categoryOptionsList = document.querySelectorAll(
-    ".option.option-category"
-  );
+  const categorySelect = document.querySelector(".selected-category");
+  const categoryOptions = document.querySelector(".options-container-category");
 
-  categorySelected.addEventListener("click", () => {
-    categoryOptionsContainer.classList.toggle("active");
+  categorySelect.addEventListener("click", () => {
+    categoryOptions.classList.toggle("active");
   });
-  categoryOptionsList.forEach((o) => {
-    o.addEventListener("click", () => {
-      categorySelected.innerHTML = o.querySelector("label").innerHTML;
-      categoryOptionsContainer.classList.remove("active");
+
+  document.querySelectorAll(".select-box-category .option").forEach((item) => {
+    item.addEventListener("click", (e) => {
+      if (e.target.classList.contains("option-category")) {
+        categorySelect.textContent = e.target.querySelector(
+          "label"
+        ).textContent;
+        categoryOptions.classList.remove("active");
+      }
     });
   });
+  // Custom Select Box #2 END
 
   // Calendar picker
   let myCalendar = new VanillaCalendar({

@@ -78,6 +78,7 @@ body {
   border-top: 2px solid #e7e7e7;
   background-color: #f7f7f7;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   .vanilla-calendar {
     margin: 0;
@@ -86,16 +87,15 @@ body {
 }
 //  Container for select-boxes, inputs, button
 .add-container {
-  width: 600px;
-  height: 160px;
-  // margin: 0 auto;
-  display: flex;
-  justify-content: space-around;
-  position: relative;
-  margin: 0;
-  .flex-item {
-    // default value for 3 items
-    flex: 0 0 30%;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: max(2vh, 10px) max(2vw, 2rem);
+
+  padding: max(2vh, 10px) 0;
+  margin: 0 auto;
+  button {
+    grid-column: 1 / span 2;
+    place-self: center;
   }
 }
 

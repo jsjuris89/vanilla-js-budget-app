@@ -1,37 +1,37 @@
 .add-container button {
-      position: absolute;
-      right: 10px;
-      bottom: 15px;
-      top: 90px;
-      width: 100px;
-      font-size: 22px;
+  //   position: absolute;
+  //   right: 10px;
+  //   bottom: 15px;
+  //   top: 90px;
+  width: 100px;
+  font-size: 22px;
 
-      border: none;
-      border-radius: 12px;
-      background: #2f3640;
-      padding: 12px 18px;
-      color: #fff;
-      text-transform: uppercase;
-      cursor: pointer;
-      &:hover {
-          background: #5e6974;
-      }
+  border: none;
+  border-radius: 12px;
+  background: #2f3640;
+  padding: 12px 18px;
+  color: #fff;
+  text-transform: uppercase;
+  cursor: pointer;
+  &:hover {
+    background: #5e6974;
+  }
 }
 
 // Delete button hover effect
 .item-delete-btn {
-    background: #f1f1f1;
-    border: none;
-    padding: 6px;
-    width: 100px;
-    text-transform: uppercase;
-    border-radius: 4px;
-    cursor: pointer;
-    color: #fff;
-    background-size: 200%;
-    transition: 0.6s;
-    background-image: linear-gradient(to left,#FBA2A2,#DA3333,#FBA2A2);
-    &:hover {
-        background-position: right;
-    }
- }
+  background: #f1f1f1;
+  border: none;
+  padding: 6px;
+  width: 100px;
+  text-transform: uppercase;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #fff;
+  background-size: 200%;
+  transition: 0.6s;
+  background-image: linear-gradient(to left, #fba2a2, #da3333, #fba2a2);
+  &:hover {
+    background-position: right;
+  }
+}
