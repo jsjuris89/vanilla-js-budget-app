@@ -112,11 +112,14 @@ body {
   & > div {
     flex: 1;
   }
+  .income {
+    margin-right: 1em;
+  }
 }
 // Inserted html part
 .item {
   display: flex;
-  justify-content: space-around;
+  gap: 2em;
   padding: 13px;
   border-bottom: 1px solid #e7e7e7;
   &:first-child {
@@ -124,6 +127,9 @@ body {
   }
   &:nth-child(even) {
     background-color: #f7f7f7;
+  }
+  .item-description {
+    flex-grow: 1;
   }
 }
 

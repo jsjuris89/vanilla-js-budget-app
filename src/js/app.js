@@ -170,6 +170,7 @@ let budgetController = (function () {
       return newItem;
     },
     deleteItemFromArray: function (type, id) {
+      console.log("type --->", type);
       let ids;
       let index;
 
@@ -774,9 +775,9 @@ let UIController = (function () {
           '<div class="item" id="inc-%id%">' +
           '<div class="item-description">%description%</div>' +
           '<div class="item-value">%value%</div>' +
-          '<div class="item-delete">' +
-          '<button class="item-delete-btn">Delete</button>' +
-          "</div>" +
+          // '<div class="item-delete">' +
+          '<button class="item-delete">Delete</button>' +
+          // "</div>" +
           "</div>";
       } else if (type === "exp") {
         element = DOMStrings.expenseContainer;
@@ -784,9 +785,9 @@ let UIController = (function () {
           '<div class="item" id="exp-%id%" data-date="%date%">' +
           '<div class="item-description">%description%</div>' +
           '<div class="item-value">%value%</div>' +
-          '<div class="item-delete">' +
-          '<button class="item-delete-btn">Delete</button>' +
-          "</div>" +
+          // '<div class="item-delete">' +
+          '<button class="item-delete">Delete</button>' +
+          // "</div>" +
           "</div>";
       }
       newHtml = html.replace("%id%", obj.id);
@@ -932,7 +933,7 @@ let controller = (function (budget, UI, charts) {
     let type;
     let ID;
 
-    itemID = event.target.parentElement.parentElement.id;
+    itemID = event.target.parentElement.id;
 
     if (itemID) {
       splitID = itemID.split("-");
