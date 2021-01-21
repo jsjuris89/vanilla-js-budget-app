@@ -234,8 +234,10 @@ let budgetController = (function () {
         );
         month.totalExpenses = totalExpensesCalculated;
       }
-      addToMonthData(monthName, category, val);
-      localStorage.setItem("MonthData", JSON.stringify(monthData));
+      if (type === "exp") {
+        addToMonthData(monthName, category, val);
+        localStorage.setItem("MonthData", JSON.stringify(monthData));
+      }
 
       return newItem;
     },
@@ -316,9 +318,11 @@ let budgetController = (function () {
           );
           month.totalExpenses = totalExpensesCalculated;
         }
-        delFromMonthData(monthName, category, val);
+        if (type === "exp") {
+          delFromMonthData(monthName, category, val);
+          localStorage.setItem("MonthData", JSON.stringify(monthData));
+        }
         localStorage.setItem("Data", JSON.stringify(data));
-        localStorage.setItem("MonthData", JSON.stringify(monthData));
       }
     },
     calculateBudget: function () {
@@ -326,11 +330,9 @@ let budgetController = (function () {
       calculateTotal("inc");
       calculateTotal("exp");
       data.budget = data.totals.inc - data.totals.exp;
+      localStorage.setItem("Data", JSON.stringify(data));
     },
 
-    getMonthData: function () {
-      return monthData;
-    },
     getBudget: function () {
       return {
         budget: data.budget,
@@ -338,18 +340,6 @@ let budgetController = (function () {
         totalExpense: data.totals.exp,
         percentage: data.percentage,
       };
-    },
-    testData: function () {
-      console.log(data);
-    },
-    testMonthData: function () {
-      console.log(monthData);
-    },
-    getData: function () {
-      return data;
-    },
-    getMonthData: function () {
-      return monthData;
     },
   };
 })();
