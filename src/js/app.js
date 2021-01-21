@@ -31,7 +31,7 @@ let budgetController = (function () {
     jan: {
       totalExpenses: 0,
       categories: {
-        food: 2,
+        food: 0,
         transportation: 0,
         other: 0,
       },
@@ -167,33 +167,9 @@ let budgetController = (function () {
       data.allItems[type].push(newItem);
       localStorage.setItem("Data", JSON.stringify(data));
 
-      return newItem;
-    },
-    deleteItemFromArray: function (type, id) {
-      console.log("type --->", type);
-      let ids;
-      let index;
-
-      ids = data.allItems[type].map(function (currentElement) {
-        return currentElement.id;
-      });
-
-      index = ids.indexOf(id);
-
-      if (index !== -1) {
-        data.allItems[type].splice(index, 1);
-      }
-      localStorage.setItem("Data", JSON.stringify(data));
-    },
-    calculateBudget: function () {
-      // Calculate total income & expenses
-      calculateTotal("inc");
-      calculateTotal("exp");
-      data.budget = data.totals.inc - data.totals.exp;
-    },
-    updateAllMonths: function () {
-      let allExp = data.allItems.exp;
-      let months = [
+      // 2. update monthData with new values
+      // a) stuff needed for addToMonthData function
+      const months = [
         "January",
         "February",
         "March",
@@ -207,386 +183,149 @@ let budgetController = (function () {
         "November",
         "December",
       ];
+      const itemDate = new Date(newItem.date);
+      const month = months[itemDate.getMonth()];
 
-      function updateJanExp() {
-        let januaryExp = allExp.filter(function (item) {
-          let itemDate = new Date(item.date);
-          let month = months[itemDate.getMonth()];
+      // b) stuff needed for addToMonthData function
+      let monthName;
 
-          if (month == "January") {
-            return true;
-          }
-        });
+      if (month === "January") {
+        monthName = "jan";
+      } else if (month === "February") {
+        monthName = "feb";
+      } else if (month === "March") {
+        monthName = "mar";
+      } else if (month === "April") {
+        monthName = "apr";
+      } else if (month === "May") {
+        monthName = "may";
+      } else if (month === "June") {
+        monthName = "jun";
+      } else if (month === "July") {
+        monthName = "jul";
+      } else if (month === "August") {
+        monthName = "aug";
+      } else if (month === "September") {
+        monthName = "sep";
+      } else if (month === "October") {
+        monthName = "oct";
+      } else if (month === "November") {
+        monthName = "nov";
+      } else if (month === "December") {
+        monthName = "dec";
+      }
 
-        let totalFood = 0;
-        let totalTransport = 0;
-        let totalOther = 0;
+      // now we can add stuff to object monthData
+      function addToMonthData(monthName, category, val) {
+        const month = monthData[monthName];
 
-        // 3 if's for delete very last item from monthData obj
-        if (!allExp.filter((e) => e.category === "food").length > 0) {
-          monthData.jan.categories.food = totalFood;
+        console.log(`before monthData.${monthName}:`, month.categories);
+        month.categories[category] += val;
+        console.log(`after monthData.${monthName}:`, month.categories);
+        // console.log(month.categories[category]);
+
+        // update month total
+        let totalExpensesCalculated = Object.values(month.categories).reduce(
+          (a, b) => a + b,
+          0
+        );
+        console.log(
+          `total expenses in ${monthName} ${totalExpensesCalculated}`
+        );
+        month.totalExpenses = totalExpensesCalculated;
+      }
+      addToMonthData(monthName, category, val);
+      localStorage.setItem("MonthData", JSON.stringify(monthData));
+
+      return newItem;
+    },
+    deleteItemFromArray: function (type, id) {
+      let ids;
+      let index;
+
+      ids = data.allItems[type].map(function (currentElement) {
+        return currentElement.id;
+      });
+
+      index = ids.indexOf(id);
+
+      if (index !== -1) {
+        let toDelete = data.allItems[type].splice(index, 1);
+
+        let months = [
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December",
+        ];
+        let itemDate = new Date(toDelete[0].date);
+        let month = months[itemDate.getMonth()];
+
+        if (month === "January") {
+          monthName = "jan";
+        } else if (month === "February") {
+          monthName = "feb";
+        } else if (month === "March") {
+          monthName = "mar";
+        } else if (month === "April") {
+          monthName = "apr";
+        } else if (month === "May") {
+          monthName = "may";
+        } else if (month === "June") {
+          monthName = "jun";
+        } else if (month === "July") {
+          monthName = "jul";
+        } else if (month === "August") {
+          monthName = "aug";
+        } else if (month === "September") {
+          monthName = "sep";
+        } else if (month === "October") {
+          monthName = "oct";
+        } else if (month === "November") {
+          monthName = "nov";
+        } else if (month === "December") {
+          monthName = "dec";
         }
 
-        if (!allExp.filter((e) => e.category === "transportation").length > 0) {
-          monthData.jan.categories.transportation = totalTransport;
+        const category = toDelete[0].category;
+        const val = toDelete[0].value;
+
+        function delFromMonthData(monthName, category, val) {
+          const month = monthData[monthName];
+          console.log("category:", category);
+
+          console.log(`before monthData.${monthName}:`, month.categories);
+          month.categories[category] -= val;
+          console.log(`after monthData.${monthName}:`, month.categories);
+
+          // update month total
+          let totalExpensesCalculated = Object.values(month.categories).reduce(
+            (a, b) => a + b,
+            0
+          );
+          console.log(
+            `total expenses in ${monthName} ${totalExpensesCalculated}`
+          );
+          month.totalExpenses = totalExpensesCalculated;
         }
-
-        if (!allExp.filter((e) => e.category === "other").length > 0) {
-          monthData.jan.categories.other = totalOther;
-        }
-
-        januaryExp.forEach(function (item) {
-          if (item.category == "food") {
-            totalFood += item.value;
-            monthData.jan.categories.food = totalFood;
-          }
-
-          if (item.category == "transportation") {
-            totalTransport += item.value;
-            monthData.jan.categories.transportation = totalTransport;
-          }
-
-          if (item.category == "other") {
-            totalOther += item.value;
-            monthData.jan.categories.other = totalOther;
-          }
-        });
-        // Get total expenses by summing all categories
-        monthData.jan.totalExpenses =
-          monthData.jan.categories.food +
-          monthData.jan.categories.transportation +
-          monthData.jan.categories.other;
-
-        // Update localstorage
+        delFromMonthData(monthName, category, val);
+        localStorage.setItem("Data", JSON.stringify(data));
         localStorage.setItem("MonthData", JSON.stringify(monthData));
       }
-      updateJanExp();
-
-      function updateFebExp() {
-        let februaryExp = allExp.filter(function (item) {
-          let itemDate = new Date(item.date);
-          let month = months[itemDate.getMonth()];
-
-          if (month == "February") {
-            return true;
-          }
-        });
-
-        let totalFood = 0;
-        let totalTransport = 0;
-        let totalOther = 0;
-
-        // 3 if's for delete very last item from monthData obj
-        if (!allExp.filter((e) => e.category === "food").length > 0) {
-          monthData.feb.categories.food = totalFood;
-        }
-
-        if (!allExp.filter((e) => e.category === "transportation").length > 0) {
-          monthData.feb.categories.transportation = totalTransport;
-        }
-
-        if (!allExp.filter((e) => e.category === "other").length > 0) {
-          monthData.feb.categories.other = totalOther;
-        }
-
-        februaryExp.forEach(function (item) {
-          if (item.category == "food") {
-            totalFood += item.value;
-            monthData.feb.categories.food = totalFood;
-          }
-
-          if (item.category == "transportation") {
-            totalTransport += item.value;
-            monthData.feb.categories.transportation = totalTransport;
-          }
-
-          if (item.category == "other") {
-            totalOther += item.value;
-            monthData.feb.categories.other = totalOther;
-          }
-        });
-        // Get total expenses by summing all categories
-        monthData.feb.totalExpenses =
-          monthData.feb.categories.food +
-          monthData.feb.categories.transportation +
-          monthData.feb.categories.other;
-
-        // Update localstorage
-        localStorage.setItem("MonthData", JSON.stringify(monthData));
-      }
-      updateFebExp();
-
-      function updateMarExp() {
-        let marchExp = allExp.filter(function (item) {
-          let itemDate = new Date(item.date);
-          let month = months[itemDate.getMonth()];
-
-          if (month == "March") {
-            return true;
-          }
-        });
-
-        let totalFood = 0;
-        let totalTransport = 0;
-        let totalOther = 0;
-
-        // 3 if's for delete very last item from monthData obj
-        if (!allExp.filter((e) => e.category === "food").length > 0) {
-          monthData.mar.categories.food = totalFood;
-        }
-
-        if (!allExp.filter((e) => e.category === "transportation").length > 0) {
-          monthData.mar.categories.transportation = totalTransport;
-        }
-
-        if (!allExp.filter((e) => e.category === "other").length > 0) {
-          monthData.mar.categories.other = totalOther;
-        }
-
-        marchExp.forEach(function (item) {
-          if (item.category == "food") {
-            totalFood += item.value;
-            monthData.mar.categories.food = totalFood;
-          }
-
-          if (item.category == "transportation") {
-            totalTransport += item.value;
-            monthData.mar.categories.transportation = totalTransport;
-          }
-
-          if (item.category == "other") {
-            totalOther += item.value;
-            monthData.mar.categories.other = totalOther;
-          }
-        });
-        // Get total expenses by summing all categories
-        monthData.mar.totalExpenses =
-          monthData.mar.categories.food +
-          monthData.mar.categories.transportation +
-          monthData.mar.categories.other;
-
-        // Update localstorage
-        localStorage.setItem("MonthData", JSON.stringify(monthData));
-      }
-      updateMarExp();
-
-      function updateAprExp() {
-        let aprilExp = allExp.filter(function (item) {
-          let itemDate = new Date(item.date);
-          let month = months[itemDate.getMonth()];
-
-          if (month == "April") {
-            return true;
-          }
-        });
-
-        let totalFood = 0;
-        let totalTransport = 0;
-        let totalOther = 0;
-
-        // 3 if's for delete very last item from monthData obj
-        if (!allExp.filter((e) => e.category === "food").length > 0) {
-          monthData.apr.categories.food = totalFood;
-        }
-
-        if (!allExp.filter((e) => e.category === "transportation").length > 0) {
-          monthData.apr.categories.transportation = totalTransport;
-        }
-
-        if (!allExp.filter((e) => e.category === "other").length > 0) {
-          monthData.apr.categories.other = totalOther;
-        }
-
-        aprilExp.forEach(function (item) {
-          if (item.category == "food") {
-            totalFood += item.value;
-            monthData.apr.categories.food = totalFood;
-          }
-
-          if (item.category == "transportation") {
-            totalTransport += item.value;
-            monthData.apr.categories.transportation = totalTransport;
-          }
-
-          if (item.category == "other") {
-            totalOther += item.value;
-            monthData.apr.categories.other = totalOther;
-          }
-        });
-        // Get total expenses by summing all categories
-        monthData.apr.totalExpenses =
-          monthData.apr.categories.food +
-          monthData.apr.categories.transportation +
-          monthData.apr.categories.other;
-
-        // Update localstorage
-        localStorage.setItem("MonthData", JSON.stringify(monthData));
-      }
-      updateAprExp();
-
-      function updateMayExp() {
-        let mayExp = allExp.filter(function (item) {
-          let itemDate = new Date(item.date);
-          let month = months[itemDate.getMonth()];
-
-          if (month == "May") {
-            return true;
-          }
-        });
-
-        let totalFood = 0;
-        let totalTransport = 0;
-        let totalOther = 0;
-
-        // 3 if's for delete very last item from monthData obj
-        if (!allExp.filter((e) => e.category === "food").length > 0) {
-          monthData.may.categories.food = totalFood;
-        }
-
-        if (!allExp.filter((e) => e.category === "transportation").length > 0) {
-          monthData.may.categories.transportation = totalTransport;
-        }
-
-        if (!allExp.filter((e) => e.category === "other").length > 0) {
-          monthData.may.categories.other = totalOther;
-        }
-
-        mayExp.forEach(function (item) {
-          if (item.category == "food") {
-            totalFood += item.value;
-            monthData.may.categories.food = totalFood;
-          }
-
-          if (item.category == "transportation") {
-            totalTransport += item.value;
-            monthData.may.categories.transportation = totalTransport;
-          }
-
-          if (item.category == "other") {
-            totalOther += item.value;
-            monthData.may.categories.other = totalOther;
-          }
-        });
-        // Get total expenses by summing all categories
-        monthData.may.totalExpenses =
-          monthData.may.categories.food +
-          monthData.may.categories.transportation +
-          monthData.may.categories.other;
-
-        // Update localstorage
-        localStorage.setItem("MonthData", JSON.stringify(monthData));
-      }
-      updateMayExp();
-
-      function updateJunExp() {
-        let juneExp = allExp.filter(function (item) {
-          let itemDate = new Date(item.date);
-          let month = months[itemDate.getMonth()];
-
-          if (month == "June") {
-            return true;
-          }
-        });
-
-        let totalFood = 0;
-        let totalTransport = 0;
-        let totalOther = 0;
-
-        // 3 if's for delete very last item from monthData obj
-        if (!allExp.filter((e) => e.category === "food").length > 0) {
-          monthData.jun.categories.food = totalFood;
-        }
-
-        if (!allExp.filter((e) => e.category === "transportation").length > 0) {
-          monthData.jun.categories.transportation = totalTransport;
-        }
-
-        if (!allExp.filter((e) => e.category === "other").length > 0) {
-          monthData.jun.categories.other = totalOther;
-        }
-
-        juneExp.forEach(function (item) {
-          if (item.category == "food") {
-            totalFood += item.value;
-            monthData.jun.categories.food = totalFood;
-          }
-
-          if (item.category == "transportation") {
-            totalTransport += item.value;
-            monthData.jun.categories.transportation = totalTransport;
-          }
-
-          if (item.category == "other") {
-            totalOther += item.value;
-            monthData.jun.categories.other = totalOther;
-          }
-        });
-        // Get total expenses by summing all categories
-        monthData.jun.totalExpenses =
-          monthData.jun.categories.food +
-          monthData.jun.categories.transportation +
-          monthData.jun.categories.other;
-
-        // Update localstorage
-        localStorage.setItem("MonthData", JSON.stringify(monthData));
-      }
-      updateJunExp();
-
-      function updateJulExp() {
-        let julyExp = allExp.filter(function (item) {
-          let itemDate = new Date(item.date);
-          let month = months[itemDate.getMonth()];
-
-          if (month == "July") {
-            return true;
-          }
-        });
-
-        let totalFood = 0;
-        let totalTransport = 0;
-        let totalOther = 0;
-
-        // 3 if's for delete very last item from monthData obj
-        if (!allExp.filter((e) => e.category === "food").length > 0) {
-          monthData.jul.categories.food = totalFood;
-        }
-
-        if (!allExp.filter((e) => e.category === "transportation").length > 0) {
-          monthData.jul.categories.transportation = totalTransport;
-        }
-
-        if (!allExp.filter((e) => e.category === "other").length > 0) {
-          monthData.jul.categories.other = totalOther;
-        }
-
-        julyExp.forEach(function (item) {
-          if (item.category == "food") {
-            totalFood += item.value;
-            monthData.jul.categories.food = totalFood;
-          }
-
-          if (item.category == "transportation") {
-            totalTransport += item.value;
-            monthData.jul.categories.transportation = totalTransport;
-          }
-
-          if (item.category == "other") {
-            totalOther += item.value;
-            monthData.jul.categories.other = totalOther;
-          }
-        });
-        // Get total expenses by summing all categories
-        monthData.jul.totalExpenses =
-          monthData.jul.categories.food +
-          monthData.jul.categories.transportation +
-          monthData.jul.categories.other;
-
-        // Update localstorage
-        localStorage.setItem("MonthData", JSON.stringify(monthData));
-      }
-      updateJulExp();
-
-      // If need later we can add rest months Aug, Sep, Oct etc
+    },
+    calculateBudget: function () {
+      // Calculate total income & expenses
+      calculateTotal("inc");
+      calculateTotal("exp");
+      data.budget = data.totals.inc - data.totals.exp;
     },
 
     getMonthData: function () {
@@ -775,9 +514,7 @@ let UIController = (function () {
           '<div class="item" id="inc-%id%">' +
           '<div class="item-description">%description%</div>' +
           '<div class="item-value">%value%</div>' +
-          // '<div class="item-delete">' +
           '<button class="item-delete">Delete</button>' +
-          // "</div>" +
           "</div>";
       } else if (type === "exp") {
         element = DOMStrings.expenseContainer;
@@ -785,9 +522,7 @@ let UIController = (function () {
           '<div class="item" id="exp-%id%" data-date="%date%">' +
           '<div class="item-description">%description%</div>' +
           '<div class="item-value">%value%</div>' +
-          // '<div class="item-delete">' +
           '<button class="item-delete">Delete</button>' +
-          // "</div>" +
           "</div>";
       }
       newHtml = html.replace("%id%", obj.id);
@@ -885,7 +620,6 @@ let controller = (function (budget, UI, charts) {
     let calDateListArr = Array.from(calDateList);
     let isDateSelected = calDateListArr.some(function (item) {
       if (item.classList.contains("vanilla-calendar-date--selected")) {
-        console.log(item);
         return true;
       }
     });
@@ -912,15 +646,11 @@ let controller = (function (budget, UI, charts) {
         input.value,
         input.date
       );
-      // 3. Add the item to the monthData object
-      budget.updateAllMonths();
-
-      // 4. Add the item to the DOM
+      // 3. Add the item to the DOM
       UI.addItemToDom(newItem, input.type);
-      // 5. Clear input fields in DOM
+      // 4. Clear input fields in DOM
       UI.clearFields();
-
-      // 6. Update budget in DOM
+      // 5. Update budget in DOM
       updateBudget();
     } else {
       console.log("User Input Validation failed!");
@@ -942,11 +672,9 @@ let controller = (function (budget, UI, charts) {
     }
     // 1. delete item from the data object
     budget.deleteItemFromArray(type, ID);
-    // 2. update monthData object
-    budget.updateAllMonths();
-    // 3. delete item from DOM
+    // 2. delete item from DOM
     UI.deleteItemFromDom(itemID);
-    // 4. Update and show new budget
+    // 3. Update and show new budget
     updateBudget();
   };
 
